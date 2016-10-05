@@ -4,14 +4,14 @@ module Lurch
       MIME_TYPE = "application/vnd.api+json".freeze
 
       dependency do
-        require "jsonapi" unless defined?(::JSONAPI)
+        require "json" unless defined?(::JSON)
       end
 
       def call(conn)
         @app.call(conn).on_complete do |env|
           env[:body_raw] = env[:body]
           begin
-            env[:body] = JSONAPI.parse(env[:body])
+            env[:body] = JSON.parse(env[:body])
           rescue StandardError => err
             env[:parse_error] = err
           end

@@ -2,10 +2,10 @@ module Lurch
   class Resource
     attr_reader :id
 
-    def initialize(store, resource_identifier)
+    def initialize(store, type, id)
       @store = store
-      @type = Lurch.normalize_type(resource_identifier.type)
-      @id = resource_identifier.id
+      @type = Lurch.normalize_type(type)
+      @id = id
     end
 
     def loaded?
@@ -20,6 +20,12 @@ module Lurch
       raise Errors::RelationshipNotLoaded unless loaded?
 
       _stored_resource.attributes
+    end
+
+    def relationships
+      raise Errors::RelationshipNotLoaded unless loaded?
+
+      _stored_resource.relationships
     end
 
   private

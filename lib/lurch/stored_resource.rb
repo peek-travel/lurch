@@ -1,20 +1,24 @@
 module Lurch
   class StoredResource
-    def initialize(store, data)
+    def initialize(store, resource_object)
       @store = store
-      @data = data
+      @resource_object = resource_object
     end
 
     def id
-      @id ||= data.id
+      @id ||= resource_object["id"]
     end
 
     def type
-      @type ||= Lurch.normalize_type(data.type)
+      @type ||= Lurch.normalize_type(resource_object["type"])
     end
 
     def attributes
       fixed_attributes
+    end
+
+    def relationships
+      fixed_relationships
     end
 
     def attribute?(name)
@@ -35,16 +39,16 @@ module Lurch
 
   private
 
-    attr_reader :store, :data
+    attr_reader :store, :resource_object
 
     def fixed_attributes
-      @fixed_attributes ||= data.attributes.to_h.each_with_object({}) do |(key, value), hash|
+      @fixed_attributes ||= resource_object["attributes"].each_with_object({}) do |(key, value), hash|
         hash[Inflecto.underscore(key).to_sym] = value
       end
     end
 
     def fixed_relationships
-      @fixed_relationships ||= data.relationships.to_h.each_with_object({}) do |(key, value), hash|
+      @fixed_relationships ||= resource_object["relationships"].each_with_object({}) do |(key, value), hash|
         hash[Inflecto.underscore(key).to_sym] = Relationship.new(store, value)
       end
     end
