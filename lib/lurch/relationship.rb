@@ -5,7 +5,7 @@ module Lurch
     def initialize(store, document)
       @document = document
       @store = store
-      create_resources(document.data) unless document.data.nil?
+      create_resources(document["data"]) unless document["data"].nil?
     end
 
     def loaded?
@@ -23,7 +23,7 @@ module Lurch
     end
 
     def link?
-      @document.links.respond_to?(:related)
+      !!(@document["links"] && @document["links"]["related"])
     end
 
     def one?
@@ -36,7 +36,7 @@ module Lurch
 
     def each(&block)
       if one?
-        Array(@resource).each(&block)
+        [*@resource].each(&block)
       elsif many?
         @resources.each(&block)
       else
@@ -46,8 +46,8 @@ module Lurch
 
     def fetch
       if link?
-        result = @store.load_from_url(@document.links.related.value)
-        set_resources(result.is_a?(Array), Array(result))
+        resources = @store.load_from_url(@document["links"]["related"])
+        set_resources(resources.is_a?(Array), [*resources])
       elsif one?
         @resource.fetch
       elsif many?
@@ -60,8 +60,10 @@ module Lurch
   private
 
     def create_resources(data)
-      resources = Array(data).map do |resource|
-        Resource.new(@store, resource)
+      relationship_data = Lurch.to_a(data)
+
+      resources = relationship_data.map do |resource_object|
+        Resource.new(@store, resource_object["type"], resource_object["id"])
       end
 
       set_resources(data.is_a?(Array), resources)

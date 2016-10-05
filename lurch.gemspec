@@ -13,13 +13,11 @@ Gem::Specification.new do |gem|
   gem.files         = `git ls-files`.split($RS)
   gem.require_paths = ["lib"]
 
-  gem.add_dependency("faraday")
-  gem.add_dependency("jsonapi", "0.1.1.beta2")
-  gem.add_dependency("inflecto")
+  gem.add_dependency("faraday", "~> 0.9")
+  gem.add_dependency("inflecto", "~> 0.0")
 
-  gem.add_development_dependency("pry")
-  gem.add_development_dependency("rspec")
-  gem.add_development_dependency("rubocop")
-  gem.add_development_dependency("rake")
-  gem.add_development_dependency("geminabox")
+  gem.add_development_dependency("pry", "~> 0.10")
+  gem.add_development_dependency("rspec", "~> 3.5")
+  gem.add_development_dependency("rubocop", "~> 0.43")
+  gem.add_development_dependency("rake", "~> 11.3")
 end

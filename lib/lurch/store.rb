@@ -18,7 +18,7 @@ module Lurch
     def peek(type, id)
       stored_resource = fetch(type, id)
       return nil if stored_resource.nil?
-      Resource.new(self, stored_resource)
+      Resource.new(self, stored_resource.type, stored_resource.id)
     end
 
     def fetch(type, id)
@@ -50,9 +50,11 @@ module Lurch
       document = client.get(url)
 
       stored_resources = store_resources(document)
-      resources = stored_resources.map { |resource| Resource.new(self, resource) }
+      resources = stored_resources.map do |stored_resource|
+        Resource.new(self, stored_resource.type, stored_resource.id)
+      end
 
-      document.data.is_a?(Array) ? resources : resources.first
+      document["data"].is_a?(Array) ? resources : resources.first
     end
 
   private
@@ -64,12 +66,14 @@ module Lurch
     end
 
     def store_resources(document)
-      primary_stored_resources = Array(document.data).map do |data|
-        push(StoredResource.new(self, data))
+      primary_data = Lurch.to_a(document["data"])
+
+      primary_stored_resources = primary_data.map do |resource_object|
+        push(StoredResource.new(self, resource_object))
       end
 
-      Array(document.included).each do |included_resource_data|
-        push(StoredResource.new(self, included_resource_data))
+      Lurch.to_a(document["included"]).each do |resource_object|
+        push(StoredResource.new(self, resource_object))
       end
 
       primary_stored_resources

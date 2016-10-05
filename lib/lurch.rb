@@ -24,4 +24,9 @@ module Lurch
   def self.normalize_type(type)
     Inflecto.pluralize(Inflecto.underscore(type)).to_sym
   end
+
+  def self.to_a(value)
+    return [] if value.nil?
+    value.is_a?(Array) ? value : [value]
+  end
 end
