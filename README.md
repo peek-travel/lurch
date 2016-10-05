@@ -1,4 +1,4 @@
-# Lurch
+# Lurch [![Build Status](https://travis-ci.com/gadabout/lurch.svg?token=EE31hyxwr1Gpyes7CKcT&branch=master)](https://travis-ci.com/gadabout/lurch)
 
 ![lurch](https://cloud.githubusercontent.com/assets/5169/19086498/45d8db2a-8a23-11e6-8739-b37d0d8a6704.gif)
 
@@ -46,7 +46,7 @@ next_page_result = result.next_page  #=> another result object for page 2
 
 ```ruby
 contact = store.find(Contact, 1)
-changeset = Peeps::ChangeSet.new(contact, name: 'New Name')
+changeset = Lurch::ChangeSet.new(contact, name: 'New Name')
 changeset.update_attributes(email: 'new_email@example.com')
 
 if store.save(changeset)
@@ -60,7 +60,7 @@ end
 ### create a new resource
 
 ```ruby
-changeset = Peeps::ChangeSet.new(Contact, name: 'Name')
+changeset = Lurch::ChangeSet.new(Contact, name: 'Name')
 if new_contact = store.save(changeset)
   # new_contact.name => "name"
 else
@@ -103,7 +103,7 @@ contact2 = store.find(Contact, 1)
 ### adding a new related resource to an existing resource
 
 ```ruby
-changeset = Peeps::ChangeSet.new(PhoneNumber, number: '1112223344')
+changeset = Lurch::ChangeSet.new(PhoneNumber, number: '1112223344')
 changeset.add_related(:contact, contact)
 result = store.save(changeset)
 

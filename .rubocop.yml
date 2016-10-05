@@ -1,0 +1,17 @@
+AllCops:
+  TargetRubyVersion: 2.1
+
+Style/AccessModifierIndentation:
+  EnforcedStyle: outdent
+
+Documentation:
+  Enabled: false
+
+Metrics/LineLength:
+  Max: 160
+
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+
+Style/DoubleNegation:
+  Enabled: false
