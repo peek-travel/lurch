@@ -26,8 +26,20 @@ module Lurch
       store[normalized_type][id]
     end
 
-    def save
-      # TODO
+    def save(changeset)
+      return insert(changeset) if changeset.id.nil?
+      url = resource_url(changeset.type, changeset.id)
+
+      document = client.patch(url, changeset.payload)
+      process_document(document)
+    end
+
+    def insert(changeset)
+      return save(changeset) unless changeset.id.nil?
+      url = resources_url(changeset.type)
+
+      document = client.post(url, changeset.payload)
+      process_document(document)
     end
 
     def delete
@@ -48,7 +60,14 @@ module Lurch
 
     def load_from_url(url)
       document = client.get(url)
+      process_document(document)
+    end
 
+  private
+
+    attr_reader :client, :store
+
+    def process_document(document)
       stored_resources = store_resources(document)
       resources = stored_resources.map do |stored_resource|
         Resource.new(self, stored_resource.type, stored_resource.id)
@@ -56,10 +75,6 @@ module Lurch
 
       document["data"].is_a?(Array) ? resources : resources.first
     end
-
-  private
-
-    attr_reader :client, :store
 
     def push(resource)
       store[resource.type][resource.id] = resource

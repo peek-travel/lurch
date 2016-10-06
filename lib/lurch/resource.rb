@@ -1,6 +1,6 @@
 module Lurch
   class Resource
-    attr_reader :id
+    attr_reader :id, :type
 
     def initialize(store, type, id)
       @store = store
@@ -14,6 +14,7 @@ module Lurch
 
     def fetch
       @store.find(@type, id)
+      self
     end
 
     def attributes
@@ -26,6 +27,14 @@ module Lurch
       raise Errors::RelationshipNotLoaded unless loaded?
 
       _stored_resource.relationships
+    end
+
+    def ==(other)
+      eql?(other)
+    end
+
+    def eql?(other)
+      id == other.id && type == other.type
     end
 
   private

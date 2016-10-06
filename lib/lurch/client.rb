@@ -8,6 +8,7 @@ module Lurch
       401 => Errors::Unauthorized,
       403 => Errors::Forbidden,
       404 => Errors::NotFound,
+      422 => Errors::UnprocessableEntity,
       500 => Errors::ServerError
     }.freeze
 
@@ -19,6 +20,14 @@ module Lurch
 
     def get(path)
       catch_errors(client.get(path)).body
+    end
+
+    def post(path, payload)
+      catch_errors(client.post(path, payload)).body
+    end
+
+    def patch(path, payload)
+      catch_errors(client.patch(path, payload)).body
     end
 
   private
