@@ -15,7 +15,7 @@ module Lurch
       attr_reader :document
 
       def message_from_document_error(error)
-        "#{error['status']}: #{error['detail']}"
+        [*error["status"], *error["detail"]].join(": ")
       end
     end
   end
