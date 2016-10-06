@@ -30,6 +30,10 @@ module Lurch
       catch_errors(client.patch(path, payload)).body
     end
 
+    def delete(path)
+      catch_errors(client.delete(path)).body
+    end
+
   private
 
     attr_reader :url, :authorization, :request_id

@@ -16,14 +16,9 @@ module Lurch
     end
 
     def peek(type, id)
-      stored_resource = fetch(type, id)
+      stored_resource = resource_from_store(type, id)
       return nil if stored_resource.nil?
       Resource.new(self, stored_resource.type, stored_resource.id)
-    end
-
-    def fetch(type, id)
-      normalized_type = Lurch.normalize_type(type)
-      store[normalized_type][id]
     end
 
     def save(changeset)
@@ -42,8 +37,12 @@ module Lurch
       process_document(document)
     end
 
-    def delete
-      # TODO
+    def delete(resource)
+      url = resource_url(resource.type, resource.id)
+      client.delete(url)
+
+      remove(resource)
+      true
     end
 
     def add_relationship
@@ -58,9 +57,16 @@ module Lurch
       # TODO
     end
 
+    # @private
     def load_from_url(url)
       document = client.get(url)
       process_document(document)
+    end
+
+    # @private
+    def resource_from_store(type, id)
+      normalized_type = Lurch.normalize_type(type)
+      store[normalized_type][id]
     end
 
   private
@@ -78,6 +84,10 @@ module Lurch
 
     def push(resource)
       store[resource.type][resource.id] = resource
+    end
+
+    def remove(resource)
+      store[resource.type].delete(resource.id)
     end
 
     def store_resources(document)

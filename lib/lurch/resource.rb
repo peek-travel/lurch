@@ -9,7 +9,7 @@ module Lurch
     end
 
     def loaded?
-      !!_stored_resource
+      !!resource_from_store
     end
 
     def fetch
@@ -18,15 +18,15 @@ module Lurch
     end
 
     def attributes
-      raise Errors::RelationshipNotLoaded unless loaded?
+      raise Errors::ResourceNotLoaded unless loaded?
 
-      _stored_resource.attributes
+      resource_from_store.attributes
     end
 
     def relationships
-      raise Errors::RelationshipNotLoaded unless loaded?
+      raise Errors::ResourceNotLoaded unless loaded?
 
-      _stored_resource.relationships
+      resource_from_store.relationships
     end
 
     def ==(other)
@@ -37,22 +37,28 @@ module Lurch
       id == other.id && type == other.type
     end
 
+    def [](attribute)
+      raise Errors::ResourceNotLoaded unless loaded?
+
+      resource_from_store.attributes[attribute]
+    end
+
   private
 
-    def _stored_resource
-      @store.fetch(@type, id)
+    def resource_from_store
+      @store.resource_from_store(@type, id)
     end
 
     def respond_to_missing?(method, all)
       return super unless loaded?
-      _stored_resource.attribute?(method) || _stored_resource.relationship?(method) || super
+      resource_from_store.attribute?(method) || resource_from_store.relationship?(method) || super
     end
 
     def method_missing(method, *arguments, &block)
-      raise Errors::RelationshipNotLoaded unless loaded?
+      raise Errors::ResourceNotLoaded unless loaded?
 
-      return _stored_resource.attribute(method) if _stored_resource.attribute?(method)
-      return _stored_resource.relationship(method) if _stored_resource.relationship?(method)
+      return resource_from_store.attribute(method) if resource_from_store.attribute?(method)
+      return resource_from_store.relationship(method) if resource_from_store.relationship?(method)
 
       super
     end

@@ -85,7 +85,7 @@ module Lurch
     def method_missing(method, *arguments, &block)
       return super unless one?
       return @resource.send(method, *arguments, &block) if @resource.respond_to?(method)
-      raise Errors::RelationshipNotLoaded if one? && !@resource.loaded?
+      raise Errors::ResourceNotLoaded if one? && !@resource.loaded?
       super
     end
   end

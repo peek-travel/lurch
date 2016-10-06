@@ -12,6 +12,7 @@ require "lurch/errors/not_found"
 require "lurch/errors/unprocessable_entity"
 require "lurch/errors/server_error"
 require "lurch/errors/relationship_not_loaded"
+require "lurch/errors/resource_not_loaded"
 
 require "lurch/stored_resource"
 require "lurch/relationship"
