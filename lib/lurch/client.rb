@@ -50,9 +50,11 @@ module Lurch
       @client ||= Faraday.new(url: url) do |conn|
         conn.headers[AUTHORIZATION] = authorization unless authorization.empty?
         conn.headers[REQUEST_ID] = request_id unless request_id.nil?
+
         conn.request :jsonapi
         conn.response :jsonapi
-        conn.adapter Faraday.default_adapter
+
+        conn.adapter :typhoeus
       end
     end
   end

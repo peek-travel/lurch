@@ -10,8 +10,8 @@ module Lurch
       end
 
       def call(env)
-        env[:request_headers][CONTENT_TYPE] ||= MIME_TYPE
-        env[:request_headers][ACCEPT] ||= MIME_TYPE
+        env[:request_headers][CONTENT_TYPE] = MIME_TYPE
+        env[:request_headers][ACCEPT] = MIME_TYPE
         env[:body] = JSON.generate(env[:body]) if jsonable?(env)
         @app.call(env)
       end
