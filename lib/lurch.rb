@@ -1,5 +1,7 @@
 require "inflecto"
 require "faraday"
+require "typhoeus"
+require "typhoeus/adapters/faraday"
 
 require "lurch/middleware/json_api_request"
 require "lurch/middleware/json_api_response"
