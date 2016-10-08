@@ -49,7 +49,8 @@ module Lurch
 
     def fixed_relationships
       @fixed_relationships ||= resource_object["relationships"].each_with_object({}) do |(key, value), hash|
-        hash[Inflecto.underscore(key).to_sym] = Relationship.new(store, value)
+        relationship_key = Inflecto.underscore(key).to_sym
+        hash[relationship_key] = Relationship.new(relationship_key, store, value)
       end
     end
   end
