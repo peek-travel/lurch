@@ -1,8 +1,8 @@
 module Lurch
   module Errors
-    class RelationshipNotLoaded < StandardError
+    class RelationshipNotLoaded < NotLoaded
       def message
-        "Relationship not loaded, try calling #fetch first."
+        "Relationship (#{type}) not loaded, try calling #fetch first."
       end
     end
   end

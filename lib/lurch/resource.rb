@@ -13,18 +13,18 @@ module Lurch
     end
 
     def fetch
-      @store.find(@type, id)
+      @store.find(type, id)
       self
     end
 
     def attributes
-      raise Errors::ResourceNotLoaded unless loaded?
+      raise Errors::ResourceNotLoaded, type unless loaded?
 
       resource_from_store.attributes
     end
 
     def relationships
-      raise Errors::ResourceNotLoaded unless loaded?
+      raise Errors::ResourceNotLoaded, type unless loaded?
 
       resource_from_store.relationships
     end
@@ -38,7 +38,7 @@ module Lurch
     end
 
     def [](attribute)
-      raise Errors::ResourceNotLoaded unless loaded?
+      raise Errors::ResourceNotLoaded, type unless loaded?
 
       resource_from_store.attributes[attribute]
     end
@@ -46,7 +46,7 @@ module Lurch
   private
 
     def resource_from_store
-      @store.resource_from_store(@type, id)
+      @store.resource_from_store(type, id)
     end
 
     def respond_to_missing?(method, all)
@@ -55,7 +55,7 @@ module Lurch
     end
 
     def method_missing(method, *arguments, &block)
-      raise Errors::ResourceNotLoaded unless loaded?
+      raise Errors::ResourceNotLoaded, type unless loaded?
 
       return resource_from_store.attribute(method) if resource_from_store.attribute?(method)
       return resource_from_store.relationship(method) if resource_from_store.relationship?(method)

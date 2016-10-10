@@ -2,7 +2,8 @@ module Lurch
   class Relationship
     include Enumerable
 
-    def initialize(store, document)
+    def initialize(relationship_key, store, document)
+      @relationship_key = relationship_key
       @document = document
       @store = store
       create_resources(document["data"]) unless document["data"].nil?
@@ -40,7 +41,7 @@ module Lurch
       elsif many?
         @resources.each(&block)
       else
-        raise Errors::RelationshipNotLoaded
+        raise Errors::RelationshipNotLoaded, @relationship_key
       end
     end
 
@@ -85,7 +86,7 @@ module Lurch
     def method_missing(method, *arguments, &block)
       return super unless one?
       return @resource.send(method, *arguments, &block) if @resource.respond_to?(method)
-      raise Errors::ResourceNotLoaded if one? && !@resource.loaded?
+      raise Errors::ResourceNotLoaded, @resource.type if one? && !@resource.loaded?
       super
     end
   end

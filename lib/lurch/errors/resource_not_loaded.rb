@@ -1,8 +1,8 @@
 module Lurch
   module Errors
-    class ResourceNotLoaded < StandardError
+    class ResourceNotLoaded < NotLoaded
       def message
-        "Resource not loaded, try calling #fetch first."
+        "Resource (#{type}) not loaded, try calling #fetch first."
       end
     end
   end
