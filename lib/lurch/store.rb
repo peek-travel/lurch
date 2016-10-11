@@ -5,14 +5,8 @@ module Lurch
       @store = Hash.new { |hash, key| hash[key] = {} }
     end
 
-    def find_all(type)
-      normalized_type = Lurch.normalize_type(type)
-      load_from_url(resources_url(normalized_type))
-    end
-
-    def find(type, id)
-      normalized_type = Lurch.normalize_type(type)
-      peek(normalized_type, id) || load_from_url(resource_url(normalized_type, id))
+    def from(type)
+      query.from(type)
     end
 
     def peek(type, id)
@@ -73,6 +67,10 @@ module Lurch
 
     attr_reader :client, :store
 
+    def query
+      Query.new(self)
+    end
+
     def process_document(document)
       stored_resources = store_resources(document)
       resources = stored_resources.map do |stored_resource|
@@ -102,14 +100,6 @@ module Lurch
       end
 
       primary_stored_resources
-    end
-
-    def resources_url(type)
-      "/#{Inflecto.dasherize(type.to_s)}"
-    end
-
-    def resource_url(type, id)
-      "#{resources_url(type)}/#{id}"
     end
   end
 end
