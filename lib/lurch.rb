@@ -21,6 +21,8 @@ require "lurch/stored_resource"
 require "lurch/relationship"
 require "lurch/resource"
 
+require "lurch/param_builder"
+require "lurch/query"
 require "lurch/changeset"
 require "lurch/client"
 require "lurch/store"
