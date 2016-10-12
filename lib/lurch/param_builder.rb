@@ -16,7 +16,7 @@ module Lurch
       when Array then value.map { |v| encode_value(v, "#{key}[]") }.reject(&:empty?).join("&")
       when nil   then ""
       else
-        "#{key}=#{CGI.escape(value.to_s)}"
+        value.to_s.empty? ? "" : "#{key}=#{CGI.escape(value.to_s)}"
       end
     end
 
