@@ -13,7 +13,7 @@ module Lurch
     end
 
     def fetch
-      @store.find(type, id)
+      @store.from(type).find(id)
       self
     end
 
@@ -41,6 +41,15 @@ module Lurch
       raise Errors::ResourceNotLoaded, type unless loaded?
 
       resource_from_store.attributes[attribute]
+    end
+
+    def inspect
+      inspection = if loaded?
+                     attributes.map { |name, value| "#{name}: #{value.inspect}" }.join(", ")
+                   else
+                     "not loaded"
+                   end
+      "#<#{self.class}[#{Inflecto.classify(type)}] id: #{id.inspect}, #{inspection}>"
     end
 
   private

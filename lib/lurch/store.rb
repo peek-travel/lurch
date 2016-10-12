@@ -17,7 +17,7 @@ module Lurch
 
     def save(changeset)
       return insert(changeset) if changeset.id.nil?
-      url = resource_url(changeset.type, changeset.id)
+      url = URI.resource_uri(changeset.type, changeset.id)
 
       document = client.patch(url, changeset.payload)
       process_document(document)
@@ -25,14 +25,14 @@ module Lurch
 
     def insert(changeset)
       return save(changeset) unless changeset.id.nil?
-      url = resources_url(changeset.type)
+      url = URI.resources_uri(changeset.type)
 
       document = client.post(url, changeset.payload)
       process_document(document)
     end
 
     def delete(resource)
-      url = resource_url(resource.type, resource.id)
+      url = URI.resource_uri(resource.type, resource.id)
       client.delete(url)
 
       remove(resource)

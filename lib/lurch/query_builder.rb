@@ -1,5 +1,5 @@
 module Lurch
-  class ParamBuilder
+  class QueryBuilder
     def initialize(params)
       @params = Hash(params)
     end
