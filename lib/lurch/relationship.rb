@@ -58,6 +58,18 @@ module Lurch
       self
     end
 
+    def inspect
+      if one?
+        @resource.inspect
+      elsif many?
+        @resources.inspect
+      elsif link?
+        "#<#{self.class} link: #{@document['links']['related'].inspect} not loaded>"
+      else
+        "#<#{self.class} not loaded>"
+      end
+    end
+
   private
 
     def create_resources(data)

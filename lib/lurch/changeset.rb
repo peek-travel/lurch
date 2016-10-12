@@ -20,5 +20,12 @@ module Lurch
         }
       }.reject { |_, v| v.nil? }
     end
+
+    def inspect
+      attrs = ["id: #{id.inspect}"]
+      attrs = attrs.concat attributes.map { |name, value| "#{name}: #{value.inspect}" }
+      inspection = attrs.join(", ")
+      "#<#{self.class}[#{Inflecto.classify(type)}] #{inspection}>"
+    end
   end
 end
