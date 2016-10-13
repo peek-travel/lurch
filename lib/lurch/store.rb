@@ -80,8 +80,8 @@ module Lurch
       document["data"].is_a?(Array) ? resources : resources.first
     end
 
-    def push(resource)
-      store[resource.type][resource.id] = resource
+    def push(stored_resource)
+      store[stored_resource.type][stored_resource.id] = stored_resource
     end
 
     def remove(resource)

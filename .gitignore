@@ -1,3 +1,4 @@
 Gemfile.lock
-pkg
 *.gem
+spec/examples.txt
+coverage

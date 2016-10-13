@@ -1,6 +1,9 @@
-# Lurch [![Build Status](https://travis-ci.com/gadabout/lurch.svg?token=EE31hyxwr1Gpyes7CKcT&branch=master)](https://travis-ci.com/gadabout/lurch)
+# Lurch
+[![Build Status](https://travis-ci.com/gadabout/lurch.svg?token=EE31hyxwr1Gpyes7CKcT&branch=master)](https://travis-ci.com/gadabout/lurch) [![Coverage Status](https://coveralls.io/repos/github/gadabout/lurch/badge.svg?t=O6grpt)](https://coveralls.io/github/gadabout/lurch)
 
 ![lurch](https://cloud.githubusercontent.com/assets/5169/19086498/45d8db2a-8a23-11e6-8739-b37d0d8a6704.gif)
+
+**NOTE:** The README below is not accurate.  It was used as a scratch pad for what we wanted to build; reality is slightly different.  The README will be updated once we reach something close to 1.0.
 
 Start by creating a store:
 

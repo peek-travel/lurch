@@ -27,6 +27,13 @@ module Lurch
       @store.peek(@type, id) || @store.load_from_url(URI.resource_uri(@type, id, to_query))
     end
 
+    def inspect
+      type = @type.nil? ? "" : "[#{Inflecto.classify(@type)}]"
+      query = to_query
+      query = query.empty? ? "" : " #{query.inspect}"
+      "#<#{self.class}#{type}#{query}>"
+    end
+
   private
 
     def to_query

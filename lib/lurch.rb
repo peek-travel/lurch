@@ -1,3 +1,5 @@
+require "uri"
+
 require "inflecto"
 require "faraday"
 require "typhoeus"
