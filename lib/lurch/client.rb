@@ -30,8 +30,12 @@ module Lurch
       catch_errors(client.patch(path, payload)).body
     end
 
-    def delete(path)
-      catch_errors(client.delete(path)).body
+    def delete(path, payload = nil)
+      resp = client.delete do |req|
+        req.url path
+        req.body = payload unless payload.nil?
+      end
+      catch_errors(resp).body
     end
 
   private

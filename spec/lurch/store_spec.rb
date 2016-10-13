@@ -43,7 +43,7 @@ RSpec.describe Lurch::Store do
 
     before do
       stub_request(:patch, "example.com/people/1")
-        .with(body: JSON.dump(changeset.payload), headers: json_api_headers)
+        .with(body: JSON.dump(Lurch::PayloadBuilder.new(changeset).build), headers: json_api_headers)
         .to_return(File.new(File.expand_path("../../responses/save.txt", __FILE__)))
     end
 
@@ -58,7 +58,7 @@ RSpec.describe Lurch::Store do
 
     before do
       stub_request(:post, "example.com/people")
-        .with(body: JSON.dump(changeset.payload), headers: json_api_headers)
+        .with(body: JSON.dump(Lurch::PayloadBuilder.new(changeset).build), headers: json_api_headers)
         .to_return(File.new(File.expand_path("../../responses/insert.txt", __FILE__)))
     end
 
@@ -82,15 +82,26 @@ RSpec.describe Lurch::Store do
     end
   end
 
-  describe "#add_relationship" do
+  describe "#add_related" do
     pending "TODO"
   end
 
-  describe "#delete_relationship" do
-    pending "TODO"
+  describe "#remove_related" do
+    let(:resource) { Lurch::Resource.new(store, :person, 1) }
+    let(:related_resources) { [Lurch::Resource.new(store, :language, 1)] }
+
+    before do
+      stub_request(:delete, "example.com/people/1/relationships/favorite-languages")
+        .with(body: JSON.dump(Lurch::PayloadBuilder.new(related_resources, true).build), headers: json_api_headers)
+        .to_return(File.new(File.expand_path("../../responses/delete.txt", __FILE__)))
+    end
+
+    it "sends a DELETE request to the server for the given relationship" do
+      expect(store.remove_related(resource, :favorite_languages, related_resources)).to be true
+    end
   end
 
-  describe "#update_relationship" do
+  describe "#update_related" do
     pending "TODO"
   end
 end

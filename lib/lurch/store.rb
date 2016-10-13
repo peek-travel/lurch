@@ -19,7 +19,7 @@ module Lurch
       return insert(changeset) if changeset.id.nil?
       url = URI.resource_uri(changeset.type, changeset.id)
 
-      document = client.patch(url, changeset.payload)
+      document = client.patch(url, PayloadBuilder.new(changeset).build)
       process_document(document)
     end
 
@@ -27,7 +27,7 @@ module Lurch
       return save(changeset) unless changeset.id.nil?
       url = URI.resources_uri(changeset.type)
 
-      document = client.post(url, changeset.payload)
+      document = client.post(url, PayloadBuilder.new(changeset).build)
       process_document(document)
     end
 
@@ -39,15 +39,21 @@ module Lurch
       true
     end
 
-    def add_relationship
+    # add resource(s) to a has many relationship
+    def add_related
       # TODO
     end
 
-    def delete_relationship
-      # TODO
+    # remove resource(s) from a has many relationship
+    def remove_related(resource, relationship_key, related_resources)
+      url = URI.relationship_uri(resource.type, resource.id, relationship_key)
+      payload = PayloadBuilder.new(related_resources, true).build
+      client.delete(url, payload)
+      true
     end
 
-    def update_relationship
+    # replace resource(s) for a has many or has one relationship
+    def update_related
       # TODO
     end
 

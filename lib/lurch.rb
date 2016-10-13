@@ -25,6 +25,7 @@ require "lurch/resource"
 
 require "lurch/uri"
 require "lurch/query_builder"
+require "lurch/payload_builder"
 require "lurch/query"
 require "lurch/changeset"
 require "lurch/client"
