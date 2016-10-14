@@ -15,6 +15,16 @@ RSpec.describe Lurch::Store do
     end
   end
 
+  describe "#to" do
+    subject(:query) { store.to(type) }
+
+    it { is_expected.to be_a(Lurch::Query) }
+
+    it "passes the type on to the query" do
+      expect(query.inspect).to eq "#<Lurch::Query[Person]>"
+    end
+  end
+
   describe "#peek" do
     subject(:resource) { store.peek(type, 1) }
 
@@ -74,7 +84,7 @@ RSpec.describe Lurch::Store do
     before do
       stub_request(:delete, "example.com/people/1")
         .with(headers: json_api_headers)
-        .to_return(File.new(File.expand_path("../../responses/delete.txt", __FILE__)))
+        .to_return(File.new(File.expand_path("../../responses/no_content.txt", __FILE__)))
     end
 
     it "sends a DELETE request to the server for the given resource" do
@@ -83,7 +93,18 @@ RSpec.describe Lurch::Store do
   end
 
   describe "#add_related" do
-    pending "TODO"
+    let(:resource) { Lurch::Resource.new(store, :person, 1) }
+    let(:related_resources) { [Lurch::Resource.new(store, :language, 1)] }
+
+    before do
+      stub_request(:post, "example.com/people/1/relationships/favorite-languages")
+        .with(body: JSON.dump(Lurch::PayloadBuilder.new(related_resources, true).build), headers: json_api_headers)
+        .to_return(File.new(File.expand_path("../../responses/no_content.txt", __FILE__)))
+    end
+
+    it "sends a POST request to the server for the given relationship" do
+      expect(store.add_related(resource, :favorite_languages, related_resources)).to be true
+    end
   end
 
   describe "#remove_related" do
@@ -93,7 +114,7 @@ RSpec.describe Lurch::Store do
     before do
       stub_request(:delete, "example.com/people/1/relationships/favorite-languages")
         .with(body: JSON.dump(Lurch::PayloadBuilder.new(related_resources, true).build), headers: json_api_headers)
-        .to_return(File.new(File.expand_path("../../responses/delete.txt", __FILE__)))
+        .to_return(File.new(File.expand_path("../../responses/no_content.txt", __FILE__)))
     end
 
     it "sends a DELETE request to the server for the given relationship" do
@@ -102,6 +123,17 @@ RSpec.describe Lurch::Store do
   end
 
   describe "#update_related" do
-    pending "TODO"
+    let(:resource) { Lurch::Resource.new(store, :person, 1) }
+    let(:related_resources) { [Lurch::Resource.new(store, :language, 1)] }
+
+    before do
+      stub_request(:patch, "example.com/people/1/relationships/favorite-languages")
+        .with(body: JSON.dump(Lurch::PayloadBuilder.new(related_resources, true).build), headers: json_api_headers)
+        .to_return(File.new(File.expand_path("../../responses/no_content.txt", __FILE__)))
+    end
+
+    it "sends a PATCH request to the server for the given relationship" do
+      expect(store.update_related(resource, :favorite_languages, related_resources)).to be true
+    end
   end
 end

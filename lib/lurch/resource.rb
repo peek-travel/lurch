@@ -18,13 +18,13 @@ module Lurch
     end
 
     def attributes
-      raise Errors::ResourceNotLoaded, type unless loaded?
+      raise Errors::ResourceNotLoaded, resource_class_name unless loaded?
 
       resource_from_store.attributes
     end
 
     def relationships
-      raise Errors::ResourceNotLoaded, type unless loaded?
+      raise Errors::ResourceNotLoaded, resource_class_name unless loaded?
 
       resource_from_store.relationships
     end
@@ -38,9 +38,13 @@ module Lurch
     end
 
     def [](attribute)
-      raise Errors::ResourceNotLoaded, type unless loaded?
+      raise Errors::ResourceNotLoaded, resource_class_name unless loaded?
 
       resource_from_store.attributes[attribute]
+    end
+
+    def resource_class_name
+      Inflecto.classify(type)
     end
 
     def inspect
@@ -49,7 +53,7 @@ module Lurch
                    else
                      "not loaded"
                    end
-      "#<#{self.class}[#{Inflecto.classify(type)}] id: #{id.inspect}, #{inspection}>"
+      "#<#{self.class}[#{resource_class_name}] id: #{id.inspect}, #{inspection}>"
     end
 
   private
@@ -64,7 +68,7 @@ module Lurch
     end
 
     def method_missing(method, *arguments, &block)
-      raise Errors::ResourceNotLoaded, type unless loaded?
+      raise Errors::ResourceNotLoaded, resource_class_name unless loaded?
 
       return resource_from_store.attribute(method) if resource_from_store.attribute?(method)
       return resource_from_store.relationship(method) if resource_from_store.relationship?(method)

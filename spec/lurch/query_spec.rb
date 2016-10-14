@@ -6,8 +6,8 @@ RSpec.describe Lurch::Query do
   let(:type) { :people }
   let(:query) { Lurch::Query.new(store) }
 
-  describe "#from" do
-    before { query.from(type) }
+  describe "#type" do
+    before { query.type(type) }
 
     it "adds the specified type to the query" do
       expect(query.inspect).to eq "#<Lurch::Query[Person]>"
@@ -31,7 +31,7 @@ RSpec.describe Lurch::Query do
       end
 
       it "sends a GET request to the server, stores the returned resource in the store and responds with the resource" do
-        person = query.from(:people).find(1)
+        person = query.type(:people).find(1)
         expect(person.id).to eq 1
         expect(store.peek(:people, 1)).to eq person
       end
@@ -46,10 +46,35 @@ RSpec.describe Lurch::Query do
     end
 
     it "sends a GET request to the server, stores the returned resources in the store and responds with the resources" do
-      people = query.from(:people).all
+      people = query.type(:people).all
       expect(people.count).to eq 2
       expect(store.peek(:people, 1)).to be
       expect(store.peek(:people, 2)).to be
+    end
+  end
+
+  describe "#save" do
+    it "delegates to the store" do
+      resource = Lurch::Resource.new(store, :person, 1)
+      changeset = Lurch::Changeset.new(resource, name: "Foo")
+      expect(store).to receive(:save)
+      query.type(:people).save(changeset)
+    end
+  end
+
+  describe "#insert" do
+    it "delegates to the store" do
+      changeset = Lurch::Changeset.new(:person, name: "Foo")
+      expect(store).to receive(:insert)
+      query.type(:people).insert(changeset)
+    end
+  end
+
+  describe "#delete" do
+    it "delegates to the store" do
+      resource = Lurch::Resource.new(store, :person, 1)
+      expect(store).to receive(:delete)
+      query.type(:people).delete(resource)
     end
   end
 
