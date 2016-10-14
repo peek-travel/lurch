@@ -12,21 +12,8 @@ module Lurch
       def call(env)
         env[:request_headers][CONTENT_TYPE] = MIME_TYPE
         env[:request_headers][ACCEPT] = MIME_TYPE
-        env[:body] = JSON.generate(env[:body]) if jsonable?(env)
+        env[:body] = JSON.generate(env[:body]) if env[:body].is_a?(Hash)
         @app.call(env)
-      end
-
-    private
-
-      def jsonable?(env)
-        case env[:body]
-        when Hash
-          true
-        when Array
-          true
-        else
-          false
-        end
       end
     end
   end

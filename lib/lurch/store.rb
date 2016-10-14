@@ -6,7 +6,11 @@ module Lurch
     end
 
     def from(type)
-      query.from(type)
+      query.type(type)
+    end
+
+    def to(type)
+      query.type(type)
     end
 
     def peek(type, id)
@@ -15,24 +19,24 @@ module Lurch
       Resource.new(self, stored_resource.type, stored_resource.id)
     end
 
-    def save(changeset)
+    def save(changeset, query = {})
       return insert(changeset) if changeset.id.nil?
-      url = URI.resource_uri(changeset.type, changeset.id)
+      url = URI.resource_uri(changeset.type, changeset.id, query)
 
       document = client.patch(url, PayloadBuilder.new(changeset).build)
       process_document(document)
     end
 
-    def insert(changeset)
+    def insert(changeset, query = {})
       return save(changeset) unless changeset.id.nil?
-      url = URI.resources_uri(changeset.type)
+      url = URI.resources_uri(changeset.type, query)
 
       document = client.post(url, PayloadBuilder.new(changeset).build)
       process_document(document)
     end
 
-    def delete(resource)
-      url = URI.resource_uri(resource.type, resource.id)
+    def delete(resource, query = {})
+      url = URI.resource_uri(resource.type, resource.id, query)
       client.delete(url)
 
       remove(resource)
@@ -40,21 +44,18 @@ module Lurch
     end
 
     # add resource(s) to a has many relationship
-    def add_related
-      # TODO
+    def add_related(resource, relationship_key, related_resources)
+      modify_relationship(:post, resource, relationship_key, related_resources)
     end
 
     # remove resource(s) from a has many relationship
     def remove_related(resource, relationship_key, related_resources)
-      url = URI.relationship_uri(resource.type, resource.id, relationship_key)
-      payload = PayloadBuilder.new(related_resources, true).build
-      client.delete(url, payload)
-      true
+      modify_relationship(:delete, resource, relationship_key, related_resources)
     end
 
     # replace resource(s) for a has many or has one relationship
-    def update_related
-      # TODO
+    def update_related(resource, relationship_key, related_resources)
+      modify_relationship(:patch, resource, relationship_key, related_resources)
     end
 
     # @private
@@ -106,6 +107,13 @@ module Lurch
       end
 
       primary_stored_resources
+    end
+
+    def modify_relationship(method, resource, relationship_key, related_resources)
+      url = URI.relationship_uri(resource.type, resource.id, relationship_key)
+      payload = PayloadBuilder.new(related_resources, true).build
+      client.send(method, url, payload)
+      true
     end
   end
 end

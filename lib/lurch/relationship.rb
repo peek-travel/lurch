@@ -10,17 +10,11 @@ module Lurch
     end
 
     def loaded?
-      one? || many?
+      (one? && @resource.loaded?) || (many? && @resources.all?(&:loaded?))
     end
 
-    def resource_loaded?
-      if one?
-        @resource.loaded?
-      elsif many?
-        @resources.all?(&:loaded?)
-      else
-        false
-      end
+    def identifier?
+      one? || many?
     end
 
     def link?
@@ -98,7 +92,7 @@ module Lurch
     def method_missing(method, *arguments, &block)
       return super unless one?
       return @resource.send(method, *arguments, &block) if @resource.respond_to?(method)
-      raise Errors::ResourceNotLoaded, @resource.type if one? && !@resource.loaded?
+      raise Errors::ResourceNotLoaded, @resource.resource_class_name if one? && !@resource.loaded?
       super
     end
   end

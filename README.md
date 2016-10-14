@@ -1,128 +1,169 @@
 # Lurch
 [![Build Status](https://travis-ci.com/gadabout/lurch.svg?token=EE31hyxwr1Gpyes7CKcT&branch=master)](https://travis-ci.com/gadabout/lurch) [![Coverage Status](https://coveralls.io/repos/github/gadabout/lurch/badge.svg?t=O6grpt)](https://coveralls.io/github/gadabout/lurch)
 
-![lurch](https://cloud.githubusercontent.com/assets/5169/19086498/45d8db2a-8a23-11e6-8739-b37d0d8a6704.gif)
+![lurch](https://cloud.githubusercontent.com/assets/221693/19378217/48fd6a9e-91a0-11e6-9085-3383efb20d72.gif)
 
-**NOTE:** The README below is not accurate.  It was used as a scratch pad for what we wanted to build; reality is slightly different.  The README will be updated once we reach something close to 1.0.
+A simple Ruby [JSON API](http://jsonapi.org/) client.
+
+## Installation
+
+Add this line to your application's Gemfile:
+
+    gem 'lurch'
+
+And then execute:
+
+    $ bundle
+
+Or install it yourself as:
+
+    $ gem install lurch
+
+## Basic Usage
 
 Start by creating a store:
 
 ```ruby
-store = Lurch::Store.new(:url => 'http://example.com/api', :authorization => "Bearer #{token}")
+store = Lurch::Store.new(url: "http://example.com/api")
 ```
 
-## Fetching resources
+### Fetch resources from the server
+
+GET individual resources from the server by id:
 
 ```ruby
-result = store.find_all(:contacts)
+person = store.from(:people).find(1)
+#=> #<Lurch::Resource[Person] id: 1, name: "Bob">
 ```
 
-pagination metadata is on the result object:
+Or GET all of them at once:
 
 ```ruby
-result.page      #=> 1
-result.pages     #=> 2
-result.per_page  #=> 50
-result.count     #=> 75
+people = store.from(:people).all
+#=> [#<Lurch::Resource[Person] id: 1, name: "Bob">, #<Lurch::Resource[Person] id: 2, name: "Alice">]
 ```
 
-coerce to array of resource objects; only gets the fetched page:
+`Lurch::Resource` objects have easy accessors for all fields returns from the server:
 
 ```ruby
-result.data  #=> <first 50 contacts>
+person.name
+#=> "Bob"
+person[:name]
+#=> "Bob"
+person.attributes[:name]
+#=> "Bob"
 ```
+
+But, `Lurch::Resource` objects are immutable:
 
 ```ruby
-result.each do |contact|
-  #=> contact is a resource object
-  #=> will iterate through all 75 contacts (causes second http request when first page is exhausted)
-end
+person.name = "Robert"
+#=> NoMethodError: undefined method `name=' for #<Lurch::Resource:0x007fe62c848fb8>
 ```
+
+### Update existing resources
+
+To update an existing resource, create a changeset from the resource, then PATCH it to the server using the store:
 
 ```ruby
-next_page_result = result.next_page  #=> another result object for page 2
+changeset = Lurch::Changeset.new(person, name: "Robert")
+store.save(changeset)
+#=> #<Lurch::Resource[Person] id: 1, name: "Robert">
 ```
 
-## Persisting resources
-
-### updating an existing resource
+Existing references to the resource will be updated:
 
 ```ruby
-contact = store.find(Contact, 1)
-changeset = Lurch::ChangeSet.new(contact, name: 'New Name')
-changeset.update_attributes(email: 'new_email@example.com')
-
-if store.save(changeset)
-  contact.name  #=> 'New Name'
-else
-  # contact is unchanged
-  changeset  #=> contains validation errors!
-end
+person.name
+#=> "Robert"
 ```
 
-### create a new resource
+### Create new resources
+
+To create new resources, first create a changeset, then POST it to the server using the store:
 
 ```ruby
-changeset = Lurch::ChangeSet.new(Contact, name: 'Name')
-if new_contact = store.save(changeset)
-  # new_contact.name => "name"
-else
-  # changest.errors = {"name" => [:messages => ['Already Taken!']]}
-end
+changeset = Lurch::Changeset.new(:person, name: "Carol")
+new_person = store.insert(changeset)
+#=> #<Lurch::Resource[Person] id: 3, name: "Carol">
 ```
 
-### delete a resource
+## Filtering
+
+You can add filters to your request if your server supports them:
 
 ```ruby
-store.delete(contact)
+people = store.from(:people).filter(name: "Alice").all
+#=> [#<Lurch::Resource[Person] id: 2, name: "Alice">]
 ```
 
-## relationships
+## Relationships
 
-### fetching related resources
+Lurch can fetch *has-many* and *has-one* relationships from the server when they are provided as *related links*:
 
 ```ruby
-contact.phone_numbers  #=> a relationship object (in this case has_many)
+person = store.from(:people).find(1)
+
+person.hobbies
+#=> #<Lurch::Relationship link: "/people/1/hobbies" not loaded>
+person.hobbies.fetch
+#=> [#<Lurch::Resource[Hobby] id: 1, name: "Cryptography">, ...]
+
+person.best_friend
+#=> #<Lurch::Relationship link: "/people/2" not loaded>
+person.best_friend.fetch
+#=> #<Lurch::Resource[Person] id: 2, name: "Alice">
 ```
+
+If the server provides the relationships as *resource identifiers* instead of links, you can get some information about the relationships without having to load them:
 
 ```ruby
-# e.g.: relationship is a link
-result = contact.phone_numbers.fetch # fetch relationship using link
-# works just like any other result object
+person = store.from(:people).find(1)
+
+person.hobbies
+#=> [#<Lurch::Resource[Hobby] id: 1, not loaded>, ...]
+person.hobbies.count
+#=> 3
+person.hobbies.map(&id)
+#=> [1, 2, 3]
+person.hobbies.map(&:name)
+#=> Lurch::Errors::ResourceNotLoaded: Resource (Hobby) not loaded, try calling #fetch first.
+
+person.best_friend
+#=> #<Lurch::Resource[Person] id: 2, not loaded>
+person.best_friend.id
+#=> 2
+person.best_friend.name
+#=> Lurch::Errors::ResourceNotLoaded: Resource (Person) not loaded, try calling #fetch first.
 ```
+
+Regardless of what kind of relationship it is, it can be fetched from the server:
 
 ```ruby
-# e.g.: relationship is resource identifiers
-result = contact.phone_numbers.fetch
-# acts like a result object, but will only have 1 page, and all resources
+person.best_friend.id
+#=> 2
+person.best_friend.loaded?
+#=> false
+person.best_friend.fetch
+#=> #<Lurch::Resource[Person] id: 2, name: "Alice">
+person.best_friend.loaded?
+#=> true
+person.best_friend.name
+#=> "Alice"
 ```
+
+## Authentication
+
+You can add an *Authorization* header to all your requests by configuring the store:
 
 ```ruby
-# same object!
-contact1 = store.find(:contacts, 1)
-contact2 = store.find(Contact, 1)
+store = Lurch::Store.new(url: "...", authorization: "Bearer eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOjEsIm5hbWUiOiJCb2IifQ.")
 ```
 
-### adding a new related resource to an existing resource
+## Contributing
 
-```ruby
-changeset = Lurch::ChangeSet.new(PhoneNumber, number: '1112223344')
-changeset.add_related(:contact, contact)
-result = store.save(changeset)
-
-new_phone_number = result.data
-```
-
-### relating two existing resources
-
-```ruby
-store.add_relationship(contact, :phone_numbers, [pn1, pn2])
-store.add_relationship(phone_number, :contact, contact)
-```
-
-### delete relationship
-
-```ruby
-store.delete_relationship(contact, :phone_numbers, [pn1, pn2])
-store.delete_relationship(phone_number, :contact, contact)
-```
+1. Fork it ( https://github.com/gadabout/lurch/fork )
+2. Create your feature branch (`git checkout -b my-new-feature`)
+3. Commit your changes (`git commit -am 'Add some feature'`)
+4. Push to the branch (`git push origin my-new-feature`)
+5. Create a new Pull Request
