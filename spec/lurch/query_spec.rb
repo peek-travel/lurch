@@ -15,10 +15,10 @@ RSpec.describe Lurch::Query do
   end
 
   describe "#filter" do
-    before { query.filter(name: "John") }
+    before { query.filter(name: "Bob") }
 
     it "adds the specified filter to the query" do
-      expect(query.inspect).to eq "#<Lurch::Query \"filter[name]=John\">"
+      expect(query.inspect).to eq "#<Lurch::Query \"filter[name]=Bob\">"
     end
   end
 

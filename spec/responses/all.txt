@@ -1,4 +1,4 @@
 HTTP/1.1 200 OK
 content-type: application/vnd.api+json
 
-{"data":[{"id":1,"type":"people","attributes":{"name":"John"}},{"id":2,"type":"people","attributes":{"name":"Jane"}}]}
+{"data":[{"id":1,"type":"people","attributes":{"name":"Bob"}},{"id":2,"type":"people","attributes":{"name":"Alice"}}]}

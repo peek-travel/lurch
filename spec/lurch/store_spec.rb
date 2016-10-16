@@ -49,7 +49,7 @@ RSpec.describe Lurch::Store do
 
   describe "#save" do
     let(:resource) { Lurch::Resource.new(store, :person, 1) }
-    let(:changeset) { Lurch::Changeset.new(resource, name: "John") }
+    let(:changeset) { Lurch::Changeset.new(resource, name: "Robert") }
 
     before do
       stub_request(:patch, "example.com/people/1")
@@ -59,12 +59,12 @@ RSpec.describe Lurch::Store do
 
     it "sends a PATCH request to the server with the changeset payload and returns the modified resource" do
       person = store.save(changeset)
-      expect(person.name).to eq "John"
+      expect(person.name).to eq "Robert"
     end
   end
 
   describe "#insert" do
-    let(:changeset) { Lurch::Changeset.new(:person, name: "Jane") }
+    let(:changeset) { Lurch::Changeset.new(:person, name: "Alice") }
 
     before do
       stub_request(:post, "example.com/people")
@@ -74,7 +74,7 @@ RSpec.describe Lurch::Store do
 
     it "sends a POST request to the server with the changeset payload and returns the inserted resource" do
       person = store.insert(changeset)
-      expect(person.name).to eq "Jane"
+      expect(person.name).to eq "Alice"
     end
   end
 
