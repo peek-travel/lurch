@@ -1,5 +1,5 @@
 # Lurch
-[![Build Status](https://travis-ci.com/gadabout/lurch.svg?token=EE31hyxwr1Gpyes7CKcT&branch=master)](https://travis-ci.com/gadabout/lurch) [![Coverage Status](https://coveralls.io/repos/github/gadabout/lurch/badge.svg?t=O6grpt)](https://coveralls.io/github/gadabout/lurch)
+[![Build Status](https://travis-ci.com/gadabout/lurch.svg?token=EE31hyxwr1Gpyes7CKcT&branch=master)](https://travis-ci.com/gadabout/lurch) [![Coverage Status](https://coveralls.io/repos/github/gadabout/lurch/badge.svg?branch=master&t=I0oe5r)](https://coveralls.io/github/gadabout/lurch?branch=master)
 
 ![lurch](https://cloud.githubusercontent.com/assets/221693/19378217/48fd6a9e-91a0-11e6-9085-3383efb20d72.gif)
 
