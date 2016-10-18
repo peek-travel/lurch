@@ -15,16 +15,6 @@ RSpec.describe Lurch::Store do
     end
   end
 
-  describe "#to" do
-    subject(:query) { store.to(type) }
-
-    it { is_expected.to be_a(Lurch::Query) }
-
-    it "passes the type on to the query" do
-      expect(query.inspect).to eq "#<Lurch::Query[Person]>"
-    end
-  end
-
   describe "#peek" do
     subject(:resource) { store.peek(type, 1) }
 
@@ -92,7 +82,7 @@ RSpec.describe Lurch::Store do
     end
   end
 
-  describe "#add_related" do
+  describe "#set_related" do
     let(:resource) { Lurch::Resource.new(store, :person, 1) }
     let(:related_resources) { [Lurch::Resource.new(store, :language, 1)] }
 
@@ -103,7 +93,7 @@ RSpec.describe Lurch::Store do
     end
 
     it "sends a POST request to the server for the given relationship" do
-      expect(store.add_related(resource, :favorite_languages, related_resources)).to be true
+      expect(store.set_related(resource, :favorite_languages, related_resources)).to be true
     end
   end
 

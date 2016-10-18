@@ -10,6 +10,11 @@ module Lurch
         document["errors"].map { |error| message_from_document_error(error) }.join(", ")
       end
 
+      def errors
+        return [] unless document.is_a?(Hash) && document["errors"]
+        @errors ||= document["errors"].map { |error| Lurch::Error.new(error) }
+      end
+
     private
 
       attr_reader :document

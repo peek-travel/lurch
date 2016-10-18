@@ -1,7 +1,7 @@
 # TODO list
 
-* [ ] Modify relationships using changesets
-* [ ] Changeset error reporting
+* [x] Modify relationships using changesets
+* [x] Changeset error reporting
 * [ ] Specify include params in a query
 * [ ] Specify pagination params in a query
 * [ ] Specify sorting params in a query
@@ -11,4 +11,4 @@
 * [ ] Configurable pluralization/singularization (don't assume urls and types are always plural)
 * [ ] >= 90% test coverage
 * [ ] Yardoc documentation
-* [ ] Release 1.0.0 open source
+* [ ] Release 0.1.0 open source

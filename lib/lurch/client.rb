@@ -8,6 +8,7 @@ module Lurch
       401 => Errors::Unauthorized,
       403 => Errors::Forbidden,
       404 => Errors::NotFound,
+      409 => Errors::Conflict,
       422 => Errors::UnprocessableEntity,
       500 => Errors::ServerError
     }.freeze
@@ -45,7 +46,6 @@ module Lurch
     def catch_errors(response)
       raise STATUS_EXCEPTIONS[response.status], response.body if STATUS_EXCEPTIONS[response.status]
       raise Errors::ServerError, response.body unless (200..299).cover?(response.status)
-      # TODO: handle 3xx?
 
       response
     end

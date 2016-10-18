@@ -1,7 +1,11 @@
 RSpec.describe Lurch::Changeset do
   let(:changeset) { Lurch::Changeset.new(:people) }
 
-  describe "#add_related" do
+  describe "#set" do
+    pending "TODO"
+  end
+
+  describe "#set_related" do
     pending "TODO"
   end
 
