@@ -8,10 +8,7 @@ module Lurch
     def from(type)
       query.type(type)
     end
-
-    def to(type)
-      query.type(type)
-    end
+    alias to from
 
     def peek(type, id)
       stored_resource = resource_from_store(type, id)
@@ -25,6 +22,9 @@ module Lurch
 
       document = client.patch(url, PayloadBuilder.new(changeset).build)
       process_document(document)
+    rescue Errors::JSONApiError => err
+      changeset.errors = err.errors
+      raise err
     end
 
     def insert(changeset, query = {})
@@ -33,6 +33,9 @@ module Lurch
 
       document = client.post(url, PayloadBuilder.new(changeset).build)
       process_document(document)
+    rescue Errors::JSONApiError => err
+      changeset.errors = err.errors
+      raise err
     end
 
     def delete(resource, query = {})
@@ -44,7 +47,7 @@ module Lurch
     end
 
     # add resource(s) to a has many relationship
-    def add_related(resource, relationship_key, related_resources)
+    def set_related(resource, relationship_key, related_resources)
       modify_relationship(:post, resource, relationship_key, related_resources)
     end
 

@@ -1,6 +1,7 @@
 module Lurch
   class Changeset
-    attr_reader :id, :type, :attributes, :relationships
+    attr_reader :id, :type
+    attr_accessor :attributes, :relationships, :errors
 
     def initialize(type, attributes = {})
       is_resource = type.is_a?(Resource)
@@ -10,7 +11,12 @@ module Lurch
       @relationships = {}
     end
 
-    def add_related(relationship_key, related_resources)
+    def set(key, value)
+      attributes[key.to_sym] = value
+      self
+    end
+
+    def set_related(relationship_key, related_resources)
       @relationships[relationship_key.to_sym] = related_resources
       self
     end
