@@ -23,7 +23,8 @@ module Lurch
       {
         "id" => resource.id,
         "type" => Inflecto.dasherize(resource.type.to_s),
-        "attributes" => attributes_for(resource)
+        "attributes" => attributes_for(resource),
+        "relationships" => relationships_for(resource)
       }.reject { |_, v| v.nil? || (v.respond_to?(:empty?) && v.empty?) }
     end
 
@@ -32,9 +33,17 @@ module Lurch
       dasherize_keys(resource.attributes)
     end
 
+    def relationships_for(resource)
+      return {} if @resource_identifier_only
+      dasherize_keys(resource.relationships) do |value|
+        PayloadBuilder.new(value, true).build
+      end
+    end
+
     def dasherize_keys(attributes)
       attributes.each_with_object({}) do |(key, value), hash|
-        hash[Inflecto.dasherize(key.to_s)] = value
+        new_value = block_given? ? yield(value) : value
+        hash[Inflecto.dasherize(key.to_s)] = new_value
       end
     end
   end
