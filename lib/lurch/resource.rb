@@ -4,7 +4,7 @@ module Lurch
 
     def initialize(store, type, id)
       @store = store
-      @type = Lurch.normalize_type(type)
+      @type = Inflector.decode_type(type)
       @id = id
     end
 
@@ -44,7 +44,7 @@ module Lurch
     end
 
     def resource_class_name
-      Inflecto.classify(type)
+      Inflector.classify(type)
     end
 
     def inspect

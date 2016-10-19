@@ -1,7 +1,8 @@
 module Lurch
   class Store
-    def initialize(url:, authorization: "", request_id: nil)
-      @client = Client.new(url, authorization, request_id)
+    def initialize(url, options = {})
+      @config = Configuration.new(options)
+      @client = Client.new(url, @config)
       @store = Hash.new { |hash, key| hash[key] = {} }
     end
 
@@ -18,9 +19,9 @@ module Lurch
 
     def save(changeset, query = {})
       return insert(changeset) if changeset.id.nil?
-      url = URI.resource_uri(changeset.type, changeset.id, query)
+      url = uri_builder.resource_uri(changeset.type, changeset.id, query)
 
-      document = client.patch(url, PayloadBuilder.new(changeset).build)
+      document = client.patch(url, payload_builder.build(changeset))
       process_document(document)
     rescue Errors::JSONApiError => err
       changeset.errors = err.errors
@@ -29,9 +30,9 @@ module Lurch
 
     def insert(changeset, query = {})
       return save(changeset) unless changeset.id.nil?
-      url = URI.resources_uri(changeset.type, query)
+      url = uri_builder.resources_uri(changeset.type, query)
 
-      document = client.post(url, PayloadBuilder.new(changeset).build)
+      document = client.post(url, payload_builder.build(changeset))
       process_document(document)
     rescue Errors::JSONApiError => err
       changeset.errors = err.errors
@@ -39,7 +40,7 @@ module Lurch
     end
 
     def delete(resource, query = {})
-      url = URI.resource_uri(resource.type, resource.id, query)
+      url = uri_builder.resource_uri(resource.type, resource.id, query)
       client.delete(url)
 
       remove(resource)
@@ -69,16 +70,28 @@ module Lurch
 
     # @private
     def resource_from_store(type, id)
-      normalized_type = Lurch.normalize_type(type)
+      normalized_type = Inflector.decode_type(type)
       store[normalized_type][id]
     end
 
   private
 
-    attr_reader :client, :store
+    attr_reader :client, :store, :config
 
     def query
-      Query.new(self)
+      Query.new(self, inflector)
+    end
+
+    def inflector
+      @inflector ||= Inflector.new(config.inflection_mode, config.types_mode)
+    end
+
+    def uri_builder
+      @uri_builder ||= URIBuilder.new(inflector)
+    end
+
+    def payload_builder
+      @payload_builder ||= PayloadBuilder.new(inflector)
     end
 
     def process_document(document)
@@ -113,8 +126,8 @@ module Lurch
     end
 
     def modify_relationship(method, resource, relationship_key, related_resources)
-      url = URI.relationship_uri(resource.type, resource.id, relationship_key)
-      payload = PayloadBuilder.new(related_resources, true).build
+      url = uri_builder.relationship_uri(resource.type, resource.id, relationship_key)
+      payload = payload_builder.build(related_resources, true)
       client.send(method, url, payload)
       true
     end

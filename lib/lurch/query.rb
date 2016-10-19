@@ -1,32 +1,59 @@
 module Lurch
   class Query
-    def initialize(store)
+    def initialize(store, inflector)
       @store = store
+      @inflector = inflector
       @filter = {}
-      @sort = {}
+      @include = []
+      @fields = Hash.new { [] }
+      @sort = []
       @page = {}
-      @include = {}
-      @fields = {}
     end
 
     def filter(params)
-      @filter = @filter.merge(params)
+      @filter.merge!(params)
+      self
+    end
+
+    def include(*relationship_paths)
+      @include += relationship_paths
+      self
+    end
+
+    def fields(type, fields = nil)
+      type, fields = [@type, type] if type.is_a?(Array) && fields.nil?
+      @fields[type] += fields
+      self
+    end
+
+    def sort(*sort_keys)
+      @sort += sort_keys.map { |sort_key| sort_key.is_a?(Hash) ? sort_key : { sort_key => :asc } }
+      self
+    end
+
+    def page(page, key = :number)
+      @page[key] = page
+      self
+    end
+
+    def per(per, key = :size)
+      @page[key] = per
       self
     end
 
     def type(type)
-      @type = Lurch.normalize_type(type)
+      @type = Inflector.decode_type(type)
       self
     end
 
     def all
       raise ArgumentError, "No type specified for query" if @type.nil?
-      @store.load_from_url(URI.resources_uri(@type, to_query))
+      @store.load_from_url(uri_builder.resources_uri(@type, to_query))
     end
 
     def find(id)
       raise ArgumentError, "No type specified for query" if @type.nil?
-      @store.peek(@type, id) || @store.load_from_url(URI.resource_uri(@type, id, to_query))
+      @store.peek(@type, id) || @store.load_from_url(uri_builder.resource_uri(@type, id, to_query))
     end
 
     def save(changeset)
@@ -48,7 +75,7 @@ module Lurch
     end
 
     def inspect
-      type = @type.nil? ? "" : "[#{Inflecto.classify(@type)}]"
+      type = @type.nil? ? "" : "[#{Inflector.classify(@type)}]"
       query = to_query
       query = query.empty? ? "" : " #{query.inspect}"
       "#<#{self.class}#{type}#{query}>"
@@ -56,14 +83,52 @@ module Lurch
 
   private
 
+    def uri_builder
+      @uri_builder ||= URIBuilder.new(@inflector)
+    end
+
     def to_query
       QueryBuilder.new(
-        filter: @filter,
-        sort: @sort,
-        page: @page,
-        include: @include,
-        fields: @fields
+        filter: filter_query,
+        include: include_query,
+        fields: fields_query,
+        sort: sort_query,
+        page: page_query
       ).encode
+    end
+
+    def filter_query
+      @inflector.encode_keys(@filter)
+    end
+
+    def include_query
+      @include.map { |path| @inflector.encode_key(path) }.compact.uniq.join(",")
+    end
+
+    def fields_query
+      @inflector.encode_types(@fields) do |fields|
+        fields.map { |field| @inflector.encode_key(field) }.compact.uniq.join(",")
+      end
+    end
+
+    def sort_query
+      @sort.flat_map(&:to_a).map { |(key, direction)| sort_key(key, direction) }.join(",")
+    end
+
+    def sort_key(key, direction)
+      encoded_key = @inflector.encode_key(key)
+      case direction
+      when :asc
+        encoded_key
+      when :desc
+        "-#{encoded_key}"
+      else
+        raise ArgumentError, "Invalid sort direction #{direction}"
+      end
+    end
+
+    def page_query
+      @page
     end
   end
 end

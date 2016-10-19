@@ -13,10 +13,9 @@ module Lurch
       500 => Errors::ServerError
     }.freeze
 
-    def initialize(url, authorization, request_id)
+    def initialize(url, config)
       @url = url
-      @authorization = authorization
-      @request_id = request_id
+      @config = config
     end
 
     def get(path)
@@ -41,7 +40,7 @@ module Lurch
 
   private
 
-    attr_reader :url, :authorization, :request_id
+    attr_reader :url, :config
 
     def catch_errors(response)
       raise STATUS_EXCEPTIONS[response.status], response.body if STATUS_EXCEPTIONS[response.status]
@@ -52,7 +51,7 @@ module Lurch
 
     def client
       @client ||= Faraday.new(url: url) do |conn|
-        conn.headers[AUTHORIZATION] = authorization unless authorization.empty?
+        conn.headers[AUTHORIZATION] = authorization unless authorization.nil?
         conn.headers[REQUEST_ID] = request_id unless request_id.nil?
 
         conn.request :jsonapi
@@ -60,6 +59,14 @@ module Lurch
 
         conn.adapter :typhoeus
       end
+    end
+
+    def authorization
+      config.authorization
+    end
+
+    def request_id
+      config.request_id
     end
   end
 end

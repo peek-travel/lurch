@@ -1,49 +1,41 @@
 module Lurch
   class PayloadBuilder
-    def initialize(input, resource_identifier_only = false)
-      @input = input
-      @resource_identifier_only = resource_identifier_only
+    def initialize(inflector)
+      @inflector = inflector
     end
 
-    def build
-      { "data" => data }
+    def build(input, identifier_only = false)
+      { "data" => data(input, identifier_only) }
     end
 
   private
 
-    def data
-      if @input.is_a?(Enumerable)
-        @input.map { |resource| resource_object_for(resource) }
+    def data(input, identifier_only)
+      if input.is_a?(Enumerable)
+        input.map { |resource| resource_object_for(resource, identifier_only) }
       else
-        resource_object_for(@input)
+        resource_object_for(input, identifier_only)
       end
     end
 
-    def resource_object_for(resource)
+    def resource_object_for(resource, identifier_only)
       {
         "id" => resource.id,
-        "type" => Inflecto.dasherize(resource.type.to_s),
-        "attributes" => attributes_for(resource),
-        "relationships" => relationships_for(resource)
+        "type" => @inflector.encode_type(resource.type),
+        "attributes" => attributes_for(resource, identifier_only),
+        "relationships" => relationships_for(resource, identifier_only)
       }.reject { |_, v| v.nil? || (v.respond_to?(:empty?) && v.empty?) }
     end
 
-    def attributes_for(resource)
-      return {} if @resource_identifier_only
-      dasherize_keys(resource.attributes)
+    def attributes_for(resource, identifier_only)
+      return {} if identifier_only
+      @inflector.encode_keys(resource.attributes)
     end
 
-    def relationships_for(resource)
-      return {} if @resource_identifier_only
-      dasherize_keys(resource.relationships) do |value|
-        PayloadBuilder.new(value, true).build
-      end
-    end
-
-    def dasherize_keys(attributes)
-      attributes.each_with_object({}) do |(key, value), hash|
-        new_value = block_given? ? yield(value) : value
-        hash[Inflecto.dasherize(key.to_s)] = new_value
+    def relationships_for(resource, identifier_only)
+      return {} if identifier_only
+      @inflector.encode_keys(resource.relationships) do |value|
+        PayloadBuilder.new(value, @inflector, true).build
       end
     end
   end

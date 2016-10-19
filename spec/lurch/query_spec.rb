@@ -2,9 +2,9 @@ RSpec.describe Lurch::Query do
   let(:json_api_headers) { { "Content-Type" => "application/vnd.api+json", "Accept" => "application/vnd.api+json" } }
 
   let(:url) { "http://example.com" }
-  let(:store) { Lurch::Store.new(url: url) }
+  let(:store) { Lurch::Store.new(url) }
   let(:type) { :people }
-  let(:query) { Lurch::Query.new(store) }
+  let(:query) { Lurch::Query.new(store, store.send(:inflector)) }
 
   describe "#type" do
     before { query.type(type) }

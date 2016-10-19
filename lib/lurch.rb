@@ -5,11 +5,12 @@ require "faraday"
 require "typhoeus"
 require "typhoeus/adapters/faraday"
 
+require "lurch/inflector"
+
 require "lurch/middleware/json_api_request"
 require "lurch/middleware/json_api_response"
 
 require "lurch/error"
-
 require "lurch/errors/json_api_error"
 require "lurch/errors/bad_request"
 require "lurch/errors/unauthorized"
@@ -26,19 +27,16 @@ require "lurch/stored_resource"
 require "lurch/relationship"
 require "lurch/resource"
 
-require "lurch/uri"
+require "lurch/uri_builder"
 require "lurch/query_builder"
 require "lurch/payload_builder"
 require "lurch/query"
 require "lurch/changeset"
 require "lurch/client"
+require "lurch/configuration"
 require "lurch/store"
 
 module Lurch
-  def self.normalize_type(type)
-    Inflecto.pluralize(Inflecto.underscore(type)).to_sym
-  end
-
   def self.to_a(value)
     return [] if value.nil?
     value.is_a?(Array) ? value : [value]
