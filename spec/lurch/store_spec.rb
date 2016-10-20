@@ -2,7 +2,8 @@ RSpec.describe Lurch::Store do
   let(:json_api_headers) { { "Content-Type" => "application/vnd.api+json", "Accept" => "application/vnd.api+json" } }
 
   let(:url) { "http://example.com" }
-  let(:store) { Lurch::Store.new(url: url) }
+  let(:store) { Lurch::Store.new(url) }
+  let(:payload_builder) { store.send(:payload_builder) }
   let(:type) { :people }
 
   describe "#from" do
@@ -43,7 +44,7 @@ RSpec.describe Lurch::Store do
 
     before do
       stub_request(:patch, "example.com/people/1")
-        .with(body: JSON.dump(Lurch::PayloadBuilder.new(changeset).build), headers: json_api_headers)
+        .with(body: JSON.dump(payload_builder.build(changeset)), headers: json_api_headers)
         .to_return(File.new(File.expand_path("../../responses/save.txt", __FILE__)))
     end
 
@@ -58,7 +59,7 @@ RSpec.describe Lurch::Store do
 
     before do
       stub_request(:post, "example.com/people")
-        .with(body: JSON.dump(Lurch::PayloadBuilder.new(changeset).build), headers: json_api_headers)
+        .with(body: JSON.dump(payload_builder.build(changeset)), headers: json_api_headers)
         .to_return(File.new(File.expand_path("../../responses/insert.txt", __FILE__)))
     end
 
@@ -88,7 +89,7 @@ RSpec.describe Lurch::Store do
 
     before do
       stub_request(:post, "example.com/people/1/relationships/favorite-languages")
-        .with(body: JSON.dump(Lurch::PayloadBuilder.new(related_resources, true).build), headers: json_api_headers)
+        .with(body: JSON.dump(payload_builder.build(related_resources, true)), headers: json_api_headers)
         .to_return(File.new(File.expand_path("../../responses/no_content.txt", __FILE__)))
     end
 
@@ -103,7 +104,7 @@ RSpec.describe Lurch::Store do
 
     before do
       stub_request(:delete, "example.com/people/1/relationships/favorite-languages")
-        .with(body: JSON.dump(Lurch::PayloadBuilder.new(related_resources, true).build), headers: json_api_headers)
+        .with(body: JSON.dump(payload_builder.build(related_resources, true)), headers: json_api_headers)
         .to_return(File.new(File.expand_path("../../responses/no_content.txt", __FILE__)))
     end
 
@@ -118,7 +119,7 @@ RSpec.describe Lurch::Store do
 
     before do
       stub_request(:patch, "example.com/people/1/relationships/favorite-languages")
-        .with(body: JSON.dump(Lurch::PayloadBuilder.new(related_resources, true).build), headers: json_api_headers)
+        .with(body: JSON.dump(payload_builder.build(related_resources, true)), headers: json_api_headers)
         .to_return(File.new(File.expand_path("../../responses/no_content.txt", __FILE__)))
     end
 

@@ -1,6 +1,6 @@
 RSpec.describe Lurch::Resource do
   let(:url) { "http://example.com" }
-  let(:store) { Lurch::Store.new(url: url) }
+  let(:store) { Lurch::Store.new(url) }
   let(:resource_object) do
     {
       "id" => 1,

@@ -5,7 +5,7 @@ module Lurch
 
     def initialize(type, attributes = {})
       is_resource = type.is_a?(Resource)
-      @type = is_resource ? type.type : Lurch.normalize_type(type)
+      @type = is_resource ? type.type : Inflector.decode_type(type)
       @id = is_resource ? type.id : nil
       @attributes = attributes
       @relationships = {}
@@ -26,7 +26,7 @@ module Lurch
       attrs = attrs.concat attributes.map { |name, value| "#{name}: #{value.inspect}" }
       attrs = attrs.concat relationships.map { |name, value| "#{name}: #{value.inspect}" }
       inspection = attrs.join(", ")
-      "#<#{self.class}[#{Inflecto.classify(type)}] #{inspection}>"
+      "#<#{self.class}[#{Inflector.classify(type)}] #{inspection}>"
     end
   end
 end

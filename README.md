@@ -15,7 +15,7 @@ And then execute:
 
     $ bundle
 
-Or install it yourself as:
+Or install it yourself:
 
     $ gem install lurch
 
@@ -24,7 +24,7 @@ Or install it yourself as:
 Start by creating a store:
 
 ```ruby
-store = Lurch::Store.new(url: "http://example.com/api")
+store = Lurch::Store.new("http://example.com/api")
 ```
 
 ### Fetch resources from the server
@@ -43,7 +43,7 @@ people = store.from(:people).all
 #=> [#<Lurch::Resource[Person] id: 1, name: "Bob">, #<Lurch::Resource[Person] id: 2, name: "Alice">]
 ```
 
-`Lurch::Resource` objects have easy accessors for all fields returns from the server:
+`Lurch::Resource` objects have easy accessors for all attributes returned from the server:
 
 ```ruby
 person.name
@@ -157,7 +157,7 @@ person.best_friend.name
 You can add an *Authorization* header to all your requests by configuring the store:
 
 ```ruby
-store = Lurch::Store.new(url: "...", authorization: "Bearer eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOjEsIm5hbWUiOiJCb2IifQ.")
+store = Lurch::Store.new("...", authorization: "Bearer eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOjEsIm5hbWUiOiJCb2IifQ.")
 ```
 
 ## Contributing
