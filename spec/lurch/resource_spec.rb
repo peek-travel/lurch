@@ -3,7 +3,7 @@ RSpec.describe Lurch::Resource do
   let(:store) { Lurch::Store.new(url) }
   let(:resource_object) do
     {
-      "id" => 1,
+      "id" => "1",
       "type" => "people",
       "attributes" => {
         "name" => "Bob"
@@ -14,7 +14,7 @@ RSpec.describe Lurch::Resource do
     }
   end
   let(:stored_resource) { Lurch::StoredResource.new(store, resource_object) }
-  let(:resource) { Lurch::Resource.new(store, :person, 1) }
+  let(:resource) { Lurch::Resource.new(store, :person, "1") }
 
   describe "#loaded?" do
     subject { resource.loaded? }
@@ -70,25 +70,25 @@ RSpec.describe Lurch::Resource do
     subject { resource == other_resource }
 
     context "when the other resource has the same id and type as this one" do
-      let(:other_resource) { Lurch::Resource.new(store, :person, 1) }
+      let(:other_resource) { Lurch::Resource.new(store, :person, "1") }
 
       it { is_expected.to be true }
     end
 
     context "when the other resource has the same id but a different type" do
-      let(:other_resource) { Lurch::Resource.new(store, :hobby, 1) }
+      let(:other_resource) { Lurch::Resource.new(store, :hobby, "1") }
 
       it { is_expected.to be false }
     end
 
     context "when the other resource has a different id but the same type" do
-      let(:other_resource) { Lurch::Resource.new(store, :person, 2) }
+      let(:other_resource) { Lurch::Resource.new(store, :person, "2") }
 
       it { is_expected.to be false }
     end
 
     context "when the other resource has a different id and type" do
-      let(:other_resource) { Lurch::Resource.new(store, :hobby, 2) }
+      let(:other_resource) { Lurch::Resource.new(store, :hobby, "2") }
 
       it { is_expected.to be false }
     end
@@ -98,25 +98,25 @@ RSpec.describe Lurch::Resource do
     subject { resource.eql? other_resource }
 
     context "when the other resource has the same id and type as this one" do
-      let(:other_resource) { Lurch::Resource.new(store, :person, 1) }
+      let(:other_resource) { Lurch::Resource.new(store, :person, "1") }
 
       it { is_expected.to be true }
     end
 
     context "when the other resource has the same id but a different type" do
-      let(:other_resource) { Lurch::Resource.new(store, :hobby, 1) }
+      let(:other_resource) { Lurch::Resource.new(store, :hobby, "1") }
 
       it { is_expected.to be false }
     end
 
     context "when the other resource has a different id but the same type" do
-      let(:other_resource) { Lurch::Resource.new(store, :person, 2) }
+      let(:other_resource) { Lurch::Resource.new(store, :person, "2") }
 
       it { is_expected.to be false }
     end
 
     context "when the other resource has a different id and type" do
-      let(:other_resource) { Lurch::Resource.new(store, :hobby, 2) }
+      let(:other_resource) { Lurch::Resource.new(store, :hobby, "2") }
 
       it { is_expected.to be false }
     end

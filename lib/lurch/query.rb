@@ -46,6 +46,11 @@ module Lurch
       self
     end
 
+    def link(uri)
+      # TODO: fail if type already set
+      # TODO: set uri and merge in query params from provided uri if any
+    end
+
     def all
       raise ArgumentError, "No type specified for query" if @type.nil?
       @store.load_from_url(uri_builder.resources_uri(@type, to_query))
@@ -53,6 +58,7 @@ module Lurch
 
     def find(id)
       raise ArgumentError, "No type specified for query" if @type.nil?
+      raise ArgumentError, "Can't perform find for `nil`" if id.nil?
       @store.peek(@type, id) || @store.load_from_url(uri_builder.resource_uri(@type, id, to_query))
     end
 
@@ -89,12 +95,19 @@ module Lurch
 
     def to_query
       QueryBuilder.new(
-        filter: filter_query,
-        include: include_query,
-        fields: fields_query,
-        sort: sort_query,
-        page: page_query
+        {
+          filter: filter_query,
+          include: include_query,
+          fields: fields_query,
+          sort: sort_query,
+          page: page_query
+        }.merge(other_uri_params)
       ).encode
+    end
+
+    def other_uri_params
+      # TODO: existing non-standard uri query params from the provided uri (if any)
+      {}
     end
 
     def filter_query

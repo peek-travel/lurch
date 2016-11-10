@@ -17,7 +17,7 @@ RSpec.describe Lurch::Store do
   end
 
   describe "#peek" do
-    subject(:resource) { store.peek(type, 1) }
+    subject(:resource) { store.peek(type, "1") }
 
     context "when the requested resource does not exist in the store" do
       it { is_expected.to be_nil }
@@ -25,14 +25,14 @@ RSpec.describe Lurch::Store do
 
     context "when the requested resource exists in the store" do
       before do
-        stored_resource = Lurch::StoredResource.new(store, "id" => 1, "type" => type.to_s)
+        stored_resource = Lurch::StoredResource.new(store, "id" => "1", "type" => type.to_s)
         store.send(:push, stored_resource)
       end
 
       it { is_expected.to be_a(Lurch::Resource) }
 
       it "is the resource asked for" do
-        expect(resource.id).to be 1
+        expect(resource.id).to eq "1"
         expect(resource.type).to be type
       end
     end
@@ -84,8 +84,8 @@ RSpec.describe Lurch::Store do
   end
 
   describe "#set_related" do
-    let(:resource) { Lurch::Resource.new(store, :person, 1) }
-    let(:related_resources) { [Lurch::Resource.new(store, :language, 1)] }
+    let(:resource) { Lurch::Resource.new(store, :person, "1") }
+    let(:related_resources) { [Lurch::Resource.new(store, :language, "1")] }
 
     before do
       stub_request(:post, "example.com/people/1/relationships/favorite-languages")
@@ -99,8 +99,8 @@ RSpec.describe Lurch::Store do
   end
 
   describe "#remove_related" do
-    let(:resource) { Lurch::Resource.new(store, :person, 1) }
-    let(:related_resources) { [Lurch::Resource.new(store, :language, 1)] }
+    let(:resource) { Lurch::Resource.new(store, :person, "1") }
+    let(:related_resources) { [Lurch::Resource.new(store, :language, "1")] }
 
     before do
       stub_request(:delete, "example.com/people/1/relationships/favorite-languages")
@@ -114,8 +114,8 @@ RSpec.describe Lurch::Store do
   end
 
   describe "#update_related" do
-    let(:resource) { Lurch::Resource.new(store, :person, 1) }
-    let(:related_resources) { [Lurch::Resource.new(store, :language, 1)] }
+    let(:resource) { Lurch::Resource.new(store, :person, "1") }
+    let(:related_resources) { [Lurch::Resource.new(store, :language, "1")] }
 
     before do
       stub_request(:patch, "example.com/people/1/relationships/favorite-languages")

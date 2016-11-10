@@ -12,7 +12,7 @@ module Lurch
     alias to from
 
     def peek(type, id)
-      stored_resource = resource_from_store(type, id)
+      stored_resource = resource_from_store(type, id.to_s)
       return nil if stored_resource.nil?
       Resource.new(self, stored_resource.type, stored_resource.id)
     end
@@ -21,7 +21,7 @@ module Lurch
       return insert(changeset) if changeset.id.nil?
       url = uri_builder.resource_uri(changeset.type, changeset.id, query)
 
-      document = client.patch(url, payload_builder.build(changeset))
+      document = @client.patch(url, payload_builder.build(changeset))
       process_document(document)
     rescue Errors::JSONApiError => err
       changeset.errors = err.errors
@@ -32,7 +32,7 @@ module Lurch
       return save(changeset) unless changeset.id.nil?
       url = uri_builder.resources_uri(changeset.type, query)
 
-      document = client.post(url, payload_builder.build(changeset))
+      document = @client.post(url, payload_builder.build(changeset))
       process_document(document)
     rescue Errors::JSONApiError => err
       changeset.errors = err.errors
@@ -41,7 +41,7 @@ module Lurch
 
     def delete(resource, query = {})
       url = uri_builder.resource_uri(resource.type, resource.id, query)
-      client.delete(url)
+      @client.delete(url)
 
       remove(resource)
       true
@@ -64,26 +64,24 @@ module Lurch
 
     # @private
     def load_from_url(url)
-      document = client.get(url)
+      document = @client.get(url)
       process_document(document)
     end
 
     # @private
     def resource_from_store(type, id)
       normalized_type = Inflector.decode_type(type)
-      store[normalized_type][id]
+      @store[normalized_type][id]
     end
 
   private
-
-    attr_reader :client, :store, :config
 
     def query
       Query.new(self, inflector)
     end
 
     def inflector
-      @inflector ||= Inflector.new(config.inflection_mode, config.types_mode)
+      @inflector ||= Inflector.new(@config.inflection_mode, @config.types_mode)
     end
 
     def uri_builder
@@ -100,15 +98,20 @@ module Lurch
         Resource.new(self, stored_resource.type, stored_resource.id)
       end
 
-      document["data"].is_a?(Array) ? resources : resources.first
+      if document["data"].is_a?(Array)
+        paginator = pagination_links?(document) ? Paginator.new(self, document, inflector, @config) : nil
+        Collection.new(resources, paginator)
+      else
+        resources.first
+      end
     end
 
     def push(stored_resource)
-      store[stored_resource.type][stored_resource.id] = stored_resource
+      @store[stored_resource.type][stored_resource.id] = stored_resource
     end
 
     def remove(resource)
-      store[resource.type].delete(resource.id)
+      @store[resource.type].delete(resource.id)
     end
 
     def store_resources(document)
@@ -128,8 +131,18 @@ module Lurch
     def modify_relationship(method, resource, relationship_key, related_resources)
       url = uri_builder.relationship_uri(resource.type, resource.id, relationship_key)
       payload = payload_builder.build(related_resources, true)
-      client.send(method, url, payload)
+      @client.send(method, url, payload)
       true
+    end
+
+    def pagination_links?(document)
+      links = document["links"]
+      links && (
+        links["first"] ||
+        links["last"] ||
+        links["next"] ||
+        links["prev"]
+      )
     end
   end
 end

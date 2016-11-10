@@ -31,9 +31,9 @@ RSpec.describe Lurch::Query do
       end
 
       it "sends a GET request to the server, stores the returned resource in the store and responds with the resource" do
-        person = query.type(:people).find(1)
-        expect(person.id).to eq 1
-        expect(store.peek(:people, 1)).to eq person
+        person = query.type(:people).find("1")
+        expect(person.id).to eq "1"
+        expect(store.peek(:people, "1")).to eq person
       end
     end
   end
@@ -48,14 +48,14 @@ RSpec.describe Lurch::Query do
     it "sends a GET request to the server, stores the returned resources in the store and responds with the resources" do
       people = query.type(:people).all
       expect(people.count).to eq 2
-      expect(store.peek(:people, 1)).to be
-      expect(store.peek(:people, 2)).to be
+      expect(store.peek(:people, "1")).to be
+      expect(store.peek(:people, "2")).to be
     end
   end
 
   describe "#save" do
     it "delegates to the store" do
-      resource = Lurch::Resource.new(store, :person, 1)
+      resource = Lurch::Resource.new(store, :person, "1")
       changeset = Lurch::Changeset.new(resource, name: "Foo")
       expect(store).to receive(:save)
       query.type(:people).save(changeset)
@@ -72,7 +72,7 @@ RSpec.describe Lurch::Query do
 
   describe "#delete" do
     it "delegates to the store" do
-      resource = Lurch::Resource.new(store, :person, 1)
+      resource = Lurch::Resource.new(store, :person, "1")
       expect(store).to receive(:delete)
       query.type(:people).delete(resource)
     end

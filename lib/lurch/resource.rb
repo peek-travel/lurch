@@ -40,7 +40,7 @@ module Lurch
     def [](attribute)
       raise Errors::ResourceNotLoaded, resource_class_name unless loaded?
 
-      resource_from_store.attributes[attribute]
+      resource_from_store.attribute(attribute)
     end
 
     def resource_class_name
@@ -71,7 +71,10 @@ module Lurch
       raise Errors::ResourceNotLoaded, resource_class_name unless loaded?
 
       return resource_from_store.attribute(method) if resource_from_store.attribute?(method)
-      return resource_from_store.relationship(method) if resource_from_store.relationship?(method)
+      if resource_from_store.relationship?(method)
+        rel = resource_from_store.relationship(method)
+        return rel.loaded? ? rel.data : rel
+      end
 
       super
     end

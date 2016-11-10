@@ -24,7 +24,12 @@ require "lurch/errors/relationship_not_loaded"
 require "lurch/errors/resource_not_loaded"
 
 require "lurch/stored_resource"
+require "lurch/paginator"
+require "lurch/collection"
 require "lurch/relationship"
+require "lurch/relationship/linked"
+require "lurch/relationship/has_one"
+require "lurch/relationship/has_many"
 require "lurch/resource"
 
 require "lurch/uri_builder"
