@@ -1,7 +1,6 @@
 module Lurch
   class Client
     AUTHORIZATION = "Authorization".freeze
-    REQUEST_ID = "X-Request-Id".freeze
 
     STATUS_EXCEPTIONS = {
       400 => Errors::BadRequest,
@@ -19,28 +18,53 @@ module Lurch
     end
 
     def get(path)
-      catch_errors(client.get(path)).body
+      response = timed_request("GET", path) { client.get(path) }
+      catch_errors(response).body
     end
 
     def post(path, payload)
-      catch_errors(client.post(path, payload)).body
+      response = timed_request("POST", path, payload) { client.post(path, payload) }
+      catch_errors(response).body
     end
 
     def patch(path, payload)
-      catch_errors(client.patch(path, payload)).body
+      response = timed_request("PATCH", path, payload) { client.patch(path, payload) }
+      catch_errors(response).body
     end
 
     def delete(path, payload = nil)
-      resp = client.delete do |req|
-        req.url path
-        req.body = payload unless payload.nil?
+      response = timed_request("DELETE", path, payload) do
+        client.delete do |req|
+          req.url path
+          req.body = payload unless payload.nil?
+        end
       end
-      catch_errors(resp).body
+      catch_errors(response).body
     end
 
   private
 
     attr_reader :url, :config
+
+    def timed_request(method, path, payload = nil)
+      log_request(method, path, payload)
+      start_time = Time.now.to_f
+      response = yield
+      end_time = Time.now.to_f
+      time_in_ms = ((end_time - start_time) * 1000).to_i
+      log_response(response, time_in_ms)
+      response
+    end
+
+    def log_request(method, path, payload)
+      Logger.debug { "-> #{method} #{path}" }
+      Logger.debug { "-> #{payload}" } if payload && Lurch.configuration.log_payloads
+    end
+
+    def log_response(response, time_in_ms)
+      Logger.debug { "<- #{response.status} in #{time_in_ms}ms" }
+      Logger.debug { "<- #{response.body}" } if Lurch.configuration.log_payloads
+    end
 
     def catch_errors(response)
       raise STATUS_EXCEPTIONS[response.status], response.body if STATUS_EXCEPTIONS[response.status]
@@ -52,7 +76,6 @@ module Lurch
     def client
       @client ||= Faraday.new(url: url) do |conn|
         conn.headers[AUTHORIZATION] = authorization unless authorization.nil?
-        conn.headers[REQUEST_ID] = request_id unless request_id.nil?
 
         conn.request :jsonapi
         conn.response :jsonapi
@@ -63,10 +86,6 @@ module Lurch
 
     def authorization
       config.authorization
-    end
-
-    def request_id
-      config.request_id
     end
   end
 end

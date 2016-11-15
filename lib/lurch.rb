@@ -5,6 +5,8 @@ require "faraday"
 require "typhoeus"
 require "typhoeus/adapters/faraday"
 
+require "lurch/configuration"
+require "lurch/logger"
 require "lurch/inflector"
 
 require "lurch/middleware/json_api_request"
@@ -33,12 +35,26 @@ require "lurch/payload_builder"
 require "lurch/query"
 require "lurch/changeset"
 require "lurch/client"
-require "lurch/configuration"
+require "lurch/store_configuration"
 require "lurch/store"
+
+require "lurch/railtie" if defined?(Rails)
 
 module Lurch
   def self.to_a(value)
     return [] if value.nil?
     value.is_a?(Array) ? value : [value]
+  end
+
+  def self.configuration
+    @configuration ||= Configuration.new
+  end
+
+  def self.reset_configuration
+    @configuration = Configuration.new
+  end
+
+  def self.configure
+    yield(configuration)
   end
 end
