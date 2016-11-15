@@ -1,23 +1,14 @@
+require "logger"
+
 module Lurch
   class Configuration
-    def initialize(options)
-      @options = options
-    end
+    attr_accessor :logger, :log_payloads
 
-    def authorization
-      @options[:authorization]
-    end
+    def initialize
+      @logger = ::Logger.new(STDOUT)
+      @logger.level = ::Logger::INFO
 
-    def request_id
-      @options[:request_id]
-    end
-
-    def inflection_mode
-      @options[:inflection_mode] || :dasherize
-    end
-
-    def types_mode
-      @options[:types_mode] || :pluralize
+      @log_payloads = false
     end
   end
 end
