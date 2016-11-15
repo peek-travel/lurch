@@ -35,7 +35,7 @@ module Lurch
     def relationships_for(resource, identifier_only)
       return {} if identifier_only
       @inflector.encode_keys(resource.relationships) do |value|
-        PayloadBuilder.new(value, @inflector, true).build
+        PayloadBuilder.new(@inflector).build(value, true)
       end
     end
   end
