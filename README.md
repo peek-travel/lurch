@@ -32,15 +32,15 @@ store = Lurch::Store.new("http://example.com/api")
 GET individual resources from the server by id:
 
 ```ruby
-person = store.from(:people).find(1)
-#=> #<Lurch::Resource[Person] id: 1, name: "Bob">
+person = store.from(:people).find("1")
+#=> #<Lurch::Resource[Person] id: "1", name: "Bob">
 ```
 
 Or GET all of them at once:
 
 ```ruby
 people = store.from(:people).all
-#=> [#<Lurch::Resource[Person] id: 1, name: "Bob">, #<Lurch::Resource[Person] id: 2, name: "Alice">]
+#=> [#<Lurch::Resource[Person] id: "1", name: "Bob">, #<Lurch::Resource[Person] id: "2", name: "Alice">]
 ```
 
 `Lurch::Resource` objects have easy accessors for all attributes returned from the server:
@@ -68,7 +68,7 @@ To update an existing resource, create a changeset from the resource, then PATCH
 ```ruby
 changeset = Lurch::Changeset.new(person, name: "Robert")
 store.save(changeset)
-#=> #<Lurch::Resource[Person] id: 1, name: "Robert">
+#=> #<Lurch::Resource[Person] id: "1", name: "Robert">
 ```
 
 Existing references to the resource will be updated:
@@ -85,7 +85,7 @@ To create new resources, first create a changeset, then POST it to the server us
 ```ruby
 changeset = Lurch::Changeset.new(:person, name: "Carol")
 new_person = store.insert(changeset)
-#=> #<Lurch::Resource[Person] id: 3, name: "Carol">
+#=> #<Lurch::Resource[Person] id: "3", name: "Carol">
 ```
 
 ## Filtering
@@ -94,7 +94,7 @@ You can add filters to your request if your server supports them:
 
 ```ruby
 people = store.from(:people).filter(name: "Alice").all
-#=> [#<Lurch::Resource[Person] id: 2, name: "Alice">]
+#=> [#<Lurch::Resource[Person] id: "2", name: "Alice">]
 ```
 
 ## Relationships
@@ -102,37 +102,37 @@ people = store.from(:people).filter(name: "Alice").all
 Lurch can fetch *has-many* and *has-one* relationships from the server when they are provided as *related links*:
 
 ```ruby
-person = store.from(:people).find(1)
+person = store.from(:people).find("1")
 
 person.hobbies
-#=> #<Lurch::Relationship link: "/people/1/hobbies" not loaded>
+#=> #<Lurch::Relationship::Linked href: "http://example.com/api/people/1/friends">
 person.hobbies.fetch
-#=> [#<Lurch::Resource[Hobby] id: 1, name: "Cryptography">, ...]
+#=> #<Lurch::Collection[Hobby] size: 2, pages: 1>
 
 person.best_friend
-#=> #<Lurch::Relationship link: "/people/2" not loaded>
+#=> #<Lurch::Relationship::Linked href: "http://example.com/api/people/1/best-friend">
 person.best_friend.fetch
-#=> #<Lurch::Resource[Person] id: 2, name: "Alice">
+#=> #<Lurch::Resource[Person] id: "2", name: "Alice">
 ```
 
 If the server provides the relationships as *resource identifiers* instead of links, you can get some information about the relationships without having to load them:
 
 ```ruby
-person = store.from(:people).find(1)
+person = store.from(:people).find("1")
 
 person.hobbies
-#=> [#<Lurch::Resource[Hobby] id: 1, not loaded>, ...]
+#=> [#<Lurch::Resource[Hobby] id: "1", not loaded>, ...]
 person.hobbies.count
 #=> 3
 person.hobbies.map(&id)
-#=> [1, 2, 3]
+#=> ["1", "2", "3"]
 person.hobbies.map(&:name)
 #=> Lurch::Errors::ResourceNotLoaded: Resource (Hobby) not loaded, try calling #fetch first.
 
 person.best_friend
-#=> #<Lurch::Resource[Person] id: 2, not loaded>
+#=> #<Lurch::Resource[Person] id: "2", not loaded>
 person.best_friend.id
-#=> 2
+#=> "2"
 person.best_friend.name
 #=> Lurch::Errors::ResourceNotLoaded: Resource (Person) not loaded, try calling #fetch first.
 ```
@@ -141,15 +141,65 @@ Regardless of what kind of relationship it is, it can be fetched from the server
 
 ```ruby
 person.best_friend.id
-#=> 2
+#=> "2"
 person.best_friend.loaded?
 #=> false
 person.best_friend.fetch
-#=> #<Lurch::Resource[Person] id: 2, name: "Alice">
+#=> #<Lurch::Resource[Person] id: "2", name: "Alice">
 person.best_friend.loaded?
 #=> true
 person.best_friend.name
 #=> "Alice"
+```
+
+## Pagination
+
+Lurch supports traversing and requesting paginated results if the server implements pagination:
+
+```ruby
+people = store.from(:people).all
+#=> #<Lurch::Collection[Person] size: 1000, pages: 100>
+```
+
+If the server responded with meta data about the resources, you can get some information about them without loading them all:
+
+```ruby
+people.size
+#=> 1000
+people.page_count
+#=> 100
+```
+
+*NOTE: This data comes from the top-level `meta` key in the jsonapi response document.  It assumes by default the keys are "record-count" and "page-count" respectively, but can be configured in the store.*
+
+To request a specific page, use the pagination query methods:
+
+```ruby
+people = store.from(:people).page(12).per(50).all
+#=> #<Lurch::Collection[Person] size: 1000, pages: 20>
+```
+
+If you'd like to traverse the whole set, you can do that using the collection enumerator or the page enumerator:
+
+```ruby
+people.map(&:name)
+# ...many HTTP requests later...
+#=> ["Summer Brakus", "Katharina Orn", "Mr. Angus Hickle", "Collin Lowe PhD", "Kaylie Larson", ...]
+
+people.each_page.map(&:size)
+# ...many HTTP requests later...
+#=> [10, 10, 10, 10, ...]
+```
+
+*NOTE: These enumerators can cause many HTTP requests to the server, since when it runs out of the first page of resources, it will automatically request the next page to continue.*
+
+*TIP: Don't use `#count` on a collection to get its size.  Use `#size` instead.  `#count` causes the entire collection to be traversed, whereas `#size` will try and get the information from the collection meta data.*
+
+You can also just get the resources from the current page as an array:
+
+```ruby
+people.resources
+#=> [#<Lurch::Resource[Person] id: "2", name: "Summer Brakus", email: "summerb2b@kiehnhirthe.info", twitter: "@summerb2b">, ...]
 ```
 
 ## Authentication
