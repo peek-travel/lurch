@@ -1,9 +1,14 @@
-require "rspec/core/rake_task"
+require "rake/testtask"
 require "rubocop/rake_task"
 require "coveralls/rake/task"
 
-RSpec::Core::RakeTask.new("spec")
+Rake::TestTask.new do |t|
+  t.libs << "test"
+  t.test_files = FileList["test/lurch/test*.rb"]
+  t.warning = false
+end
+
 RuboCop::RakeTask.new
 Coveralls::RakeTask.new
 
-task default: [:spec, :rubocop]
+task default: [:test, :rubocop]

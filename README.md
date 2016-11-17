@@ -172,10 +172,10 @@ people.page_count
 
 *NOTE: This data comes from the top-level `meta` key in the jsonapi response document.  It assumes by default the keys are "record-count" and "page-count" respectively, but can be configured in the store.*
 
-To request a specific page, use the pagination query methods:
+To request a specific page, use the page query method:
 
 ```ruby
-people = store.from(:people).page(12).per(50).all
+people = store.from(:people).page(number: 12, size: 50).all
 #=> #<Lurch::Collection[Person] size: 1000, pages: 20>
 ```
 

@@ -19,6 +19,7 @@ module Lurch
     end
 
     def resource_object_for(resource, identifier_only)
+      return nil if resource.nil?
       {
         "id" => resource.id,
         "type" => @inflector.encode_type(resource.type),

@@ -1,4 +1,0 @@
-HTTP/1.1 201 Created
-content-type: application/vnd.api+json
-
-{"data":{"id":"2","type":"people","attributes":{"name":"Alice"}}}

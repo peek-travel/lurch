@@ -14,7 +14,6 @@ module Lurch
       case value
       when Hash  then value.map { |k, v| encode_value(v, append_key(key, k)) }.reject(&:empty?).join("&")
       when Array then value.map { |v| encode_value(v, "#{key}[]") }.reject(&:empty?).join("&")
-      when nil   then ""
       else
         value.to_s.empty? ? "" : "#{key}=#{CGI.escape(value.to_s)}"
       end
