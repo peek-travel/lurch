@@ -18,7 +18,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency("inflecto", "~> 0.0")
 
   gem.add_development_dependency("pry", "~> 0.10")
-  gem.add_development_dependency("rspec", "~> 3.5")
+  gem.add_development_dependency("minitest", "~> 5.9")
   gem.add_development_dependency("rubocop", "~> 0.43")
   gem.add_development_dependency("rake", "~> 11.3")
   gem.add_development_dependency("simplecov", "~> 0.12")

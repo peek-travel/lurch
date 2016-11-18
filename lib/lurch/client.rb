@@ -24,6 +24,7 @@ module Lurch
 
     def post(path, payload)
       response = timed_request("POST", path, payload) { client.post(path, payload) }
+      # TODO: if 204 is returned, use payload as return body (http://jsonapi.org/format/#crud-creating-responses-204)
       catch_errors(response).body
     end
 

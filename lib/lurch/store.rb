@@ -48,7 +48,7 @@ module Lurch
     end
 
     # add resource(s) to a has many relationship
-    def set_related(resource, relationship_key, related_resources)
+    def add_related(resource, relationship_key, related_resources)
       modify_relationship(:post, resource, relationship_key, related_resources)
     end
 
@@ -74,11 +74,12 @@ module Lurch
       @store[normalized_type][id]
     end
 
-  private
-
+    # @private
     def query
       Query.new(self, inflector)
     end
+
+  private
 
     def inflector
       @inflector ||= Inflector.new(@config.inflection_mode, @config.types_mode)

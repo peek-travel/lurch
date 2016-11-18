@@ -1,5 +1,8 @@
 AllCops:
   TargetRubyVersion: 2.1
+  Exclude:
+    - 'test/**/*'
+    - 'vendor/**/*'
 
 Style/AccessModifierIndentation:
   EnforcedStyle: outdent
@@ -20,4 +23,7 @@ Style/ParallelAssignment:
   Enabled: false
 
 Metrics/ClassLength:
+  Enabled: false
+
+Metrics/MethodLength:
   Enabled: false

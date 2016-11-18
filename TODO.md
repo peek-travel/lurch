@@ -14,6 +14,7 @@
 * [ ] Allow arbitrary query params
 * [ ] Singleton resources
 * [ ] Handle links better?
-* [ ] >= 90% test coverage
+* [x] >= 90% test coverage
+* [ ] Fix url path problem (e.g. "http://example.com/api" doesn't work as a base url)
 * [ ] Yardoc documentation
 * [ ] Release 0.1.0 open source

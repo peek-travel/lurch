@@ -31,13 +31,8 @@ module Lurch
       self
     end
 
-    def page(page, key = :number)
-      @page[key] = page
-      self
-    end
-
-    def per(per, key = :size)
-      @page[key] = per
+    def page(params)
+      @page.merge!(params)
       self
     end
 
@@ -46,10 +41,11 @@ module Lurch
       self
     end
 
-    def link(uri)
-      # TODO: fail if type already set
-      # TODO: set uri and merge in query params from provided uri if any
-    end
+    # def link(uri)
+    #   # TODO: fail if type already set
+    #   # TODO: set uri and merge in query params from provided uri if any
+    #   self
+    # end
 
     def all
       raise ArgumentError, "No type specified for query" if @type.nil?

@@ -6,7 +6,7 @@ module Lurch
       return Relationship::HasMany.new(store, relationship_key, document) if document.key?("data") && document["data"].is_a?(Array)
       return Relationship::HasOne.new(store, relationship_key, document) if document.key?("data")
       return Relationship::Linked.new(store, relationship_key, document) if document.key?("links") && document["links"].key?("related")
-      raise "Invalid relationship document" # TODO
+      raise ArgumentError, "Invalid relationship document"
     end
 
     def loaded?
