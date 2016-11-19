@@ -6,7 +6,7 @@ module Lurch
 
     def resources_uri(type, query = "")
       resource = inflector.encode_type(type)
-      uri = ::URI.parse("/#{resource}")
+      uri = ::URI.parse(resource)
       uri.query = query unless query.empty?
       uri.to_s
     end

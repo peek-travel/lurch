@@ -4,7 +4,7 @@ module LurchTest
     inflection_mode = [:dasherize, :underscore].sample
     types_mode = [:pluralize, :singularize].sample
 
-    @url = "http://example.com"
+    @url = "http://example.com/api"
     @store = Lurch::Store.new(@url, inflection_mode: inflection_mode, types_mode: types_mode)
     @inflector = Lurch::Inflector.new(inflection_mode, types_mode)
     @response_factory = ResponseFactory.new(@inflector, @url)
