@@ -16,4 +16,6 @@
 * [ ] Handle links better?
 * [x] >= 90% test coverage
 * [ ] Yardoc documentation
+* [ ] Add license
+* [ ] Add changelog
 * [ ] Release 0.1.0 open source
