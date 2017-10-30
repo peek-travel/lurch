@@ -11,4 +11,4 @@ end
 RuboCop::RakeTask.new
 Coveralls::RakeTask.new
 
-task default: [:test, :rubocop]
+task default: %i[test rubocop]

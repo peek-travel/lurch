@@ -9,6 +9,10 @@ module Lurch
       @paginator = paginator
     end
 
+    def loaded?
+      true
+    end
+
     def each(&block)
       block_given? ? enum.each(&block) : enum
     end

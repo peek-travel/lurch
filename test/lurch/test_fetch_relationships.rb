@@ -35,12 +35,14 @@ class TestFetchRelationships < Minitest::Test
     person = @store.from(:people).find("1")
 
     assert_kind_of Lurch::Relationship::Linked, person.phone_numbers
+    assert_equal false, person.phone_numbers.loaded?
     assert person.phone_numbers.inspect
 
     person.phone_numbers.fetch
     phone_numbers = person.phone_numbers
 
     assert_kind_of Lurch::Collection, phone_numbers
+    assert_equal true, person.phone_numbers.loaded?
     assert_kind_of Lurch::Relationship::Linked, person.relationships[:phone_numbers]
     assert_equal 2, phone_numbers.size
     assert_equal "Cell", phone_numbers.first.name

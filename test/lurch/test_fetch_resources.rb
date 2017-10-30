@@ -45,7 +45,7 @@ class TestFetchResources < Minitest::Test
   end
 
   def test_fetch_resource_from_server_that_includes_has_many_relationship
-    stub = stub_get("#{person_type}/1", @response_factory.person_response("1", "Alice", [["1", "Cell", "1112223344"], ["2", "Home", "2221113344"]]))
+    stub_get("#{person_type}/1", @response_factory.person_response("1", "Alice", [["1", "Cell", "1112223344"], ["2", "Home", "2221113344"]]))
 
     person = @store.from(:people).find("1")
 
