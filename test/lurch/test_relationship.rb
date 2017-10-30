@@ -12,6 +12,6 @@ class TestRelationship < Minitest::Test
     rel = Lurch::Relationship::HasOne.new(nil, nil, {data: nil})
 
     assert rel.loaded?
-    assert_equal nil, rel.data
+    assert_nil rel.data
   end
 end

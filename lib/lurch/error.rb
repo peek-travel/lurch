@@ -1,6 +1,6 @@
 module Lurch
   class Error
-    JSON_API_ERROR_FIELDS = %w(id links about status code title detail source meta).freeze
+    JSON_API_ERROR_FIELDS = %w[id links about status code title detail source meta].freeze
 
     attr_reader(*JSON_API_ERROR_FIELDS)
 
