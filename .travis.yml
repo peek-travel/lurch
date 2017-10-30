@@ -2,10 +2,6 @@ language: ruby
 rvm:
   - 2.1
   - 2.2
-  - 2.3.1
-  - 2.4.0-preview2
+  - 2.3
+  - 2.4
 cache: bundler
-sudo: false
-after_success:
-  - if [ "$TRAVIS_EVENT_TYPE" = "pull_request" ]; then bundle exec rake coveralls:push; fi
-  - if [ "$TRAVIS_EVENT_TYPE" = "push" ] && [ "$TRAVIS_BRANCH" = "master" ]; then bundle exec rake coveralls:push; fi

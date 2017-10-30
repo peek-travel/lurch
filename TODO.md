@@ -16,6 +16,7 @@
 * [ ] Handle links better?
 * [x] >= 90% test coverage
 * [ ] Yardoc documentation
-* [ ] Add license
-* [ ] Add changelog
+* [x] Add license
+* [x] Add changelog
 * [ ] Release 0.1.0 open source
+* [x] Switch to codecov.io
