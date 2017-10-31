@@ -226,4 +226,4 @@ store = Lurch::Store.new("...", authorization: "Bearer eyJhbGciOiJub25lIiwidHlwI
 
 ## License
 
-[MIT](LICENSE)
+[MIT](LICENSE.md)
