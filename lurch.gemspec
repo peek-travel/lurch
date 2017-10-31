@@ -3,11 +3,12 @@ require File.expand_path("../lib/lurch/version", __FILE__)
 Gem::Specification.new do |gem|
   gem.name          = "lurch"
   gem.version       = Lurch::VERSION
-  gem.summary       = ""
-  gem.description   = ""
+  gem.summary       = "A simple Ruby JSON API client"
+  gem.description   = "A client library for interacting with JSON API servers, based on http://jsonapi.org/ version 1.0."
   gem.homepage      = "https://github.com/peek-travel/lurch"
   gem.authors       = ["Chris Dosé"]
   gem.email         = "chris@peek.com"
+  gem.license       = "MIT"
 
   gem.files         = `git ls-files`.split($RS)
   gem.require_paths = ["lib"]
