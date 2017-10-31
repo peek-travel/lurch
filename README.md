@@ -1,7 +1,7 @@
 # Lurch
 [![Build Status](https://travis-ci.com/peek-travel/lurch.svg?token=EE31hyxwr1Gpyes7CKcT&branch=master)](https://travis-ci.com/peek-travel/lurch) [![codecov](https://codecov.io/gh/peek-travel/lurch/branch/master/graph/badge.svg)](https://codecov.io/gh/peek-travel/lurch)
 
-![lurch](https://cloud.githubusercontent.com/assets/221693/19378217/48fd6a9e-91a0-11e6-9085-3383efb20d72.gif)
+![lurch](./lurch.gif)
 
 A simple Ruby [JSON API](http://jsonapi.org/) client.
 
