@@ -1,5 +1,5 @@
 # Lurch
-[![Build Status](https://travis-ci.org/peek-travel/lurch.svg?branch=master)](https://travis-ci.org/peek-travel/lurch) [![codecov](https://codecov.io/gh/peek-travel/lurch/branch/master/graph/badge.svg)](https://codecov.io/gh/peek-travel/lurch)
+[![Build Status](https://travis-ci.org/peek-travel/lurch.svg?branch=master)](https://travis-ci.org/peek-travel/lurch) [![Code Coverage](https://codecov.io/gh/peek-travel/lurch/branch/master/graph/badge.svg)](https://codecov.io/gh/peek-travel/lurch) [![Gem Version](https://img.shields.io/gem/v/lurch.svg)](https://rubygems.org/gems/lurch)
 
 ![lurch](./lurch.gif)
 
