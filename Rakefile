@@ -1,6 +1,5 @@
 require "rake/testtask"
 require "rubocop/rake_task"
-require "coveralls/rake/task"
 
 Rake::TestTask.new do |t|
   t.libs << "test"
@@ -9,6 +8,5 @@ Rake::TestTask.new do |t|
 end
 
 RuboCop::RakeTask.new
-Coveralls::RakeTask.new
 
 task default: %i[test rubocop]

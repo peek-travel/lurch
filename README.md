@@ -1,5 +1,5 @@
 # Lurch
-[![Build Status](https://travis-ci.com/gadabout/lurch.svg?token=EE31hyxwr1Gpyes7CKcT&branch=master)](https://travis-ci.com/gadabout/lurch) [![Coverage Status](https://coveralls.io/repos/github/gadabout/lurch/badge.svg?branch=master&t=I0oe5r)](https://coveralls.io/github/gadabout/lurch?branch=master)
+[![Build Status](https://travis-ci.com/peek-travel/lurch.svg?token=EE31hyxwr1Gpyes7CKcT&branch=master)](https://travis-ci.com/peek-travel/lurch) [![codecov](https://codecov.io/gh/peek-travel/lurch/branch/master/graph/badge.svg)](https://codecov.io/gh/peek-travel/lurch)
 
 ![lurch](https://cloud.githubusercontent.com/assets/221693/19378217/48fd6a9e-91a0-11e6-9085-3383efb20d72.gif)
 
@@ -9,15 +9,21 @@ A simple Ruby [JSON API](http://jsonapi.org/) client.
 
 Add this line to your application's Gemfile:
 
-    gem 'lurch'
+```
+gem 'lurch'
+```
 
 And then execute:
 
-    $ bundle
+```
+$ bundle
+```
 
 Or install it yourself:
 
-    $ gem install lurch
+```
+$ gem install lurch
+```
 
 ## Basic Usage
 
@@ -212,8 +218,12 @@ store = Lurch::Store.new("...", authorization: "Bearer eyJhbGciOiJub25lIiwidHlwI
 
 ## Contributing
 
-1. Fork it ( https://github.com/gadabout/lurch/fork )
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create a new Pull Request
+1.  Fork it (<https://github.com/peek-travel/lurch/fork>)
+2.  Create your feature branch (`git checkout -b my-new-feature`)
+3.  Commit your changes (`git commit -am 'Add some feature'`)
+4.  Push to the branch (`git push origin my-new-feature`)
+5.  Create a new Pull Request
+
+## License
+
+[MIT](LICENSE)
