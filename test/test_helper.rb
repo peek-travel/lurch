@@ -1,4 +1,3 @@
-require "coveralls"
 require "pry"
 require "simplecov"
 require "codecov"
