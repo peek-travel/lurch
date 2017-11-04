@@ -41,6 +41,9 @@ class TestFetchRelationships < Minitest::Test
     person.phone_numbers.fetch
     phone_numbers = person.phone_numbers
 
+    # calling fetch again should not fail
+    person.phone_numbers.fetch
+
     assert_kind_of Lurch::Collection, phone_numbers
     assert_equal true, person.phone_numbers.loaded?
     assert_kind_of Lurch::Relationship::Linked, person.relationships[:phone_numbers]
