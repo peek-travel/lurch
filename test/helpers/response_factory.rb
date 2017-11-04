@@ -20,12 +20,20 @@ class ResponseFactory
     header(:not_found) + errors_document([404, "Not Found"])
   end
 
+  def client_error_response
+    header(:teapot) + "I'm a teapot!"
+  end
+
   def unprocessable_entity_response(message)
     header(:unprocessable_entity) + errors_document([422, message])
   end
 
   def server_error_response
     header(:server_error) + errors_document([500, "Internal Server Error"])
+  end
+
+  def bad_server_error_response
+    header(:server_error) + "Oops! Something went wrong!"
   end
 
   def person_response(id, name, phone_numbers_args = nil, code: :ok, include_phone_numbers: true)
@@ -171,6 +179,7 @@ private
     unauthorized: "401 Unauthorized".freeze,
     forbidden: "403 Forbidden".freeze,
     not_found: "404 Not Found".freeze,
+    teapot: "418 I'm a teapot".freeze,
     unprocessable_entity: "422 Unprocessable Entity".freeze,
     server_error: "500 Internal Server Error".freeze
   }.freeze
