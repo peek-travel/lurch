@@ -13,6 +13,10 @@ module Lurch
       true
     end
 
+    def fetch
+      self
+    end
+
     def each(&block)
       block_given? ? enum.each(&block) : enum
     end

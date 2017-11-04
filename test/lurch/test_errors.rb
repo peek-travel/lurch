@@ -21,9 +21,21 @@ class TestErrors < Minitest::Test
     assert_equal "404: Not Found", err.message
   end
 
+  def test_418
+    stub_get("#{person_type}/1", @response_factory.client_error_response)
+    err = assert_raises(Lurch::Errors::ClientError) { @store.from(:people).find("1") }
+    assert_equal "418: I'm a teapot!", err.message
+  end
+
   def test_500
     stub_get("#{person_type}/1", @response_factory.server_error_response)
     err = assert_raises(Lurch::Errors::ServerError) { @store.from(:people).find("1") }
     assert_equal "500: Internal Server Error", err.message
+  end
+
+  def test_unformatted_500
+    stub_get("#{person_type}/1", @response_factory.bad_server_error_response)
+    err = assert_raises(Lurch::Errors::ServerError) { @store.from(:people).find("1") }
+    assert_equal "500: Oops! Something went wrong!", err.message
   end
 end
