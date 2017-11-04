@@ -10,7 +10,7 @@ A simple Ruby [JSON API](http://jsonapi.org/) client.
 Add this line to your application's Gemfile:
 
 ```
-gem 'lurch'
+gem "lurch", "~> 0.2"
 ```
 
 And then execute:

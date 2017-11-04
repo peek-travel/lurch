@@ -18,5 +18,5 @@
 * [ ] Yardoc documentation
 * [x] Add license
 * [x] Add changelog
-* [ ] Release 0.1.0 open source
+* [x] Release 0.1.0 open source
 * [x] Switch to codecov.io
