@@ -21,6 +21,6 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency("minitest", "~> 5.9")
   gem.add_development_dependency("pry", "~> 0.10")
   gem.add_development_dependency("rake", "~> 12.2")
-  gem.add_development_dependency("rubocop", "~> 0.43")
+  gem.add_development_dependency("rubocop", "~> 0.49")
   gem.add_development_dependency("webmock", "~> 3.1")
 end
