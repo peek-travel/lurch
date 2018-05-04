@@ -5,8 +5,8 @@ module Lurch
       define_encode_type(types_mode)
     end
 
-    def self.classify(s)
-      Inflecto.classify(s)
+    def self.classify(str)
+      Inflecto.classify(str)
     end
 
     def self.decode_key(key)

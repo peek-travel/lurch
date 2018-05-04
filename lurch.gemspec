@@ -1,4 +1,4 @@
-require File.expand_path("../lib/lurch/version", __FILE__)
+require File.expand_path("lib/lurch/version", __dir__)
 
 Gem::Specification.new do |gem|
   gem.name          = "lurch"
