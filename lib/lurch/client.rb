@@ -80,7 +80,7 @@ module Lurch
     end
 
     def client
-      @client ||= Faraday.new(url: url) do |conn|
+      @client ||= Faraday.new(url: url, request: { params_encoder: FaradayParamsEncoder }) do |conn|
         conn.headers[AUTHORIZATION] = authorization unless authorization.nil?
 
         conn.request :jsonapi

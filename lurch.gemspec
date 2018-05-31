@@ -15,12 +15,13 @@ Gem::Specification.new do |gem|
 
   gem.add_dependency("faraday", "< 1.0")
   gem.add_dependency("inflecto", "~> 0.0")
+  gem.add_dependency("rack", ">= 1.0")
   gem.add_dependency("typhoeus", "< 2.0")
 
-  gem.add_development_dependency("codecov", "~> 0.1")
-  gem.add_development_dependency("minitest", "~> 5.9")
-  gem.add_development_dependency("pry", "~> 0.10")
-  gem.add_development_dependency("rake", "~> 12.2")
-  gem.add_development_dependency("rubocop", "~> 0.49")
-  gem.add_development_dependency("webmock", "~> 3.1")
+  gem.add_development_dependency("codecov")
+  gem.add_development_dependency("minitest")
+  gem.add_development_dependency("pry")
+  gem.add_development_dependency("rake")
+  gem.add_development_dependency("rubocop")
+  gem.add_development_dependency("webmock")
 end
