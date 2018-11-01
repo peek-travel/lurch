@@ -46,13 +46,13 @@ module Lurch
     end
 
     def encode_keys(hash)
-      hash.each_with_object({}) do |(key, value), acc|
+      hash.to_h.each_with_object({}) do |(key, value), acc|
         acc[encode_key(key)] = block_given? ? yield(value) : value
       end
     end
 
     def encode_types(hash)
-      hash.each_with_object({}) do |(key, value), acc|
+      hash.to_h.each_with_object({}) do |(key, value), acc|
         acc[encode_type(key)] = block_given? ? yield(value) : value
       end
     end
