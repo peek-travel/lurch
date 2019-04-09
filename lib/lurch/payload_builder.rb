@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Lurch
   class PayloadBuilder
     def initialize(inflector)
@@ -20,6 +22,7 @@ module Lurch
 
     def resource_object_for(resource, identifier_only)
       return nil if resource.nil?
+
       {
         "id" => resource.id,
         "type" => @inflector.encode_type(resource.type),
@@ -30,11 +33,13 @@ module Lurch
 
     def attributes_for(resource, identifier_only)
       return {} if identifier_only
+
       @inflector.encode_keys(resource.attributes)
     end
 
     def relationships_for(resource, identifier_only)
       return {} if identifier_only
+
       @inflector.encode_keys(resource.relationships) do |value|
         PayloadBuilder.new(@inflector).build(value, true)
       end

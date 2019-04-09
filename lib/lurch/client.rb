@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 module Lurch
   class Client
-    AUTHORIZATION = "Authorization".freeze
+    AUTHORIZATION = "Authorization"
 
     STATUS_EXCEPTIONS = {
       400 => Errors::BadRequest,

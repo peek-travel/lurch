@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Lurch
   class Query
     def initialize(store, inflector)
@@ -49,30 +51,35 @@ module Lurch
 
     def all
       raise ArgumentError, "No type specified for query" if @type.nil?
+
       @store.load_from_url(uri_builder.resources_uri(@type, to_query))
     end
 
     def find(id)
       raise ArgumentError, "No type specified for query" if @type.nil?
       raise ArgumentError, "Can't perform find for `nil`" if id.nil?
+
       @store.peek(@type, id) || @store.load_from_url(uri_builder.resource_uri(@type, id, to_query))
     end
 
     def save(changeset)
       raise ArgumentError, "No type specified for query" if @type.nil?
       raise ArgumentError, "Type mismatch" if @type != changeset.type
+
       @store.save(changeset, to_query)
     end
 
     def insert(changeset)
       raise ArgumentError, "No type specified for query" if @type.nil?
       raise ArgumentError, "Type mismatch" if @type != changeset.type
+
       @store.insert(changeset, to_query)
     end
 
     def delete(resource)
       raise ArgumentError, "No type specified for query" if @type.nil?
       raise ArgumentError, "Type mismatch" if @type != resource.type
+
       @store.delete(resource, to_query)
     end
 
