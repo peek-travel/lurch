@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Lurch
   class Railtie < ::Rails::Railtie
     initializer "lurch.initialization" do
