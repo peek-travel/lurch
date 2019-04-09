@@ -74,7 +74,7 @@ module Lurch
     end
 
     def inspect
-      suffix = @resources.first ? "[#{Inflector.classify(@resources.first.type)}]" : ""
+      suffix = @resources.first ? "[#{@resources.first.type}]" : ""
       inspection = size ? ["size: #{size}"] : []
       inspection << ["pages: #{page_count}"] if page_count
       "#<#{self.class}#{suffix} #{inspection.join(', ')}>"

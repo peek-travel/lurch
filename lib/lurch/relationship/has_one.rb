@@ -14,7 +14,7 @@ module Lurch
       end
 
       def inspect
-        @data.nil? ? "#<#{self.class} nil>" : "#<#{self.class}[#{Inflector.classify(@type)}] id: #{@id.inspect}>"
+        @data.nil? ? "#<#{self.class} nil>" : "#<#{self.class}[#{@type}] id: #{@id.inspect}>"
       end
     end
   end

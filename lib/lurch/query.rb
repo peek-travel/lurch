@@ -79,7 +79,7 @@ module Lurch
     end
 
     def inspect
-      type = @type.nil? ? "" : "[#{Inflector.classify(@type)}]"
+      type = @type.nil? ? "" : "[#{@type}]"
       query = to_query
       query = query.empty? ? "" : " #{query.inspect}"
       "#<#{self.class}#{type}#{query}>"

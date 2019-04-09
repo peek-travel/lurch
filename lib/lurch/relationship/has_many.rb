@@ -9,7 +9,7 @@ module Lurch
       end
 
       def inspect
-        suffix = @data.first ? "[#{Inflector.classify(@data.first.type)}]" : ""
+        suffix = @data.first ? "[#{@data.first.type}]" : ""
         "#<#{self.class}#{suffix} size: #{@data.size}>"
       end
     end

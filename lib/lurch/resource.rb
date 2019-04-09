@@ -53,7 +53,7 @@ module Lurch
                    else
                      "not loaded"
                    end
-      "#<#{self.class}[#{resource_class_name}] id: #{id.inspect}, #{inspection}>"
+      "#<#{self.class}[#{type}] id: #{id.inspect}, #{inspection}>"
     end
 
   private

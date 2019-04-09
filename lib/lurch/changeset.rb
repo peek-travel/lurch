@@ -26,7 +26,7 @@ module Lurch
       attrs = attrs.concat(attributes.map { |name, value| "#{name}: #{value.inspect}" })
       attrs = attrs.concat(relationships.map { |name, value| "#{name}: #{value.inspect}" })
       inspection = attrs.join(", ")
-      "#<#{self.class}[#{Inflector.classify(type)}] #{inspection}>"
+      "#<#{self.class}[#{type}] #{inspection}>"
     end
   end
 end
