@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Lurch
   class Inflector
     def initialize(inflection_mode, types_mode)

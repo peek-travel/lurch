@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Lurch
   class Changeset
     attr_reader :id, :type

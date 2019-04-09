@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 module Lurch
   module Middleware
     class JSONApiResponse < Faraday::Middleware
-      MIME_TYPE = "application/vnd.api+json".freeze
+      MIME_TYPE = "application/vnd.api+json"
 
       dependency do
         require "json" unless defined?(::JSON)
@@ -12,8 +14,8 @@ module Lurch
           env[:body_raw] = env[:body]
           begin
             env[:body] = JSON.parse(env[:body])
-          rescue StandardError => err
-            env[:parse_error] = err
+          rescue StandardError => e
+            env[:parse_error] = e
           end
         end
       end

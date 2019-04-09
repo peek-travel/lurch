@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Lurch
   class Collection
     include Enumerable
@@ -34,26 +36,30 @@ module Lurch
     end
 
     def page_count
-      @paginator.page_count if @paginator
+      @paginator&.page_count
     end
 
     def next_collection
       return @next_collection if defined?(@next_collection)
+
       @next_collection = @paginator ? @paginator.next_collection : nil
     end
 
     def prev_collection
       return @prev_collection if defined?(@prev_collection)
+
       @prev_collection = @paginator ? @paginator.prev_collection : nil
     end
 
     def first_collection
       return @first_collection if defined?(@first_collection)
+
       @first_collection = @paginator ? @paginator.first_collection : nil
     end
 
     def last_collection
       return @last_collection if defined?(@last_collection)
+
       @last_collection = @paginator ? @paginator.last_collection : nil
     end
 
@@ -88,10 +94,8 @@ module Lurch
           yielder.yield(resource)
         end
 
-        if next_collection
-          next_collection.each do |resource|
-            yielder.yield(resource)
-          end
+        next_collection&.each do |resource|
+          yielder.yield(resource)
         end
       end
     end
@@ -100,10 +104,8 @@ module Lurch
       Enumerator.new(-> { page_count }) do |yielder|
         yielder.yield(@resources)
 
-        if next_collection
-          next_collection.each_page do |page|
-            yielder.yield(page)
-          end
+        next_collection&.each_page do |page|
+          yielder.yield(page)
         end
       end
     end
