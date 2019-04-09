@@ -5,7 +5,7 @@ module Lurch
 
     def initialize(type, attributes = {})
       is_resource = type.is_a?(Resource)
-      @type = is_resource ? type.type : Inflector.decode_type(type)
+      @type = is_resource ? type.type : type
       @id = is_resource ? type.id : nil
       @attributes = attributes
       @relationships = {}

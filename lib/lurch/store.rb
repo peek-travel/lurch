@@ -19,7 +19,9 @@ module Lurch
 
     def save(changeset, query = {})
       return insert(changeset) if changeset.id.nil?
-      url = uri_builder.resource_uri(changeset.type, changeset.id, query)
+
+      type = Inflector.decode_type(changeset.type)
+      url = uri_builder.resource_uri(type, changeset.id, query)
 
       document = @client.patch(url, payload_builder.build(changeset))
       process_document(document)
@@ -30,7 +32,9 @@ module Lurch
 
     def insert(changeset, query = {})
       return save(changeset) unless changeset.id.nil?
-      url = uri_builder.resources_uri(changeset.type, query)
+
+      type = Inflector.decode_type(changeset.type)
+      url = uri_builder.resources_uri(type, query)
 
       document = @client.post(url, payload_builder.build(changeset))
       process_document(document)

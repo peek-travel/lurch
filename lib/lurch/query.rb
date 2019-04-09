@@ -60,13 +60,15 @@ module Lurch
 
     def save(changeset)
       raise ArgumentError, "No type specified for query" if @type.nil?
-      raise ArgumentError, "Type mismatch" if @type != changeset.type
+      raise ArgumentError, "Type mismatch" if @type != Inflector.decode_type(changeset.type)
+
       @store.save(changeset, to_query)
     end
 
     def insert(changeset)
       raise ArgumentError, "No type specified for query" if @type.nil?
-      raise ArgumentError, "Type mismatch" if @type != changeset.type
+      raise ArgumentError, "Type mismatch" if @type != Inflector.decode_type(changeset.type)
+
       @store.insert(changeset, to_query)
     end
 
