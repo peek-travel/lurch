@@ -1,8 +1,8 @@
 module Lurch
   class Store
-    def initialize(url, options = {})
+    def initialize(url, options = {}, &block)
       @config = StoreConfiguration.new(options)
-      @client = Client.new(url, @config)
+      @client = Client.new(url, @config, &block)
       @store = Hash.new { |hash, key| hash[key] = {} }
     end
 
