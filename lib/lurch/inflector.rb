@@ -5,7 +5,9 @@ require "dry/inflector"
 module Lurch
   class Inflector
     def initialize(inflection_mode, types_mode)
-      @inflector = Dry::Inflector.new
+      @inflector = Dry::Inflector.new do |inflections|
+        inflections.plural "people", "people"
+      end
       define_encode_key(inflection_mode)
       define_encode_type(types_mode)
     end
