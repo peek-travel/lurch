@@ -7,6 +7,7 @@ module Lurch
       @include = []
       @fields = Hash.new { [] }
       @sort = []
+      @params = {}
       @page = {}
     end
 
@@ -33,6 +34,11 @@ module Lurch
 
     def page(params)
       @page.merge!(params)
+      self
+    end
+
+    def params(params)
+      @params.merge!(params)
       self
     end
 
@@ -91,19 +97,23 @@ module Lurch
 
     def to_query
       QueryBuilder.new(
-        {
+        other_params.merge!(
           filter: filter_query,
           include: include_query,
           fields: fields_query,
           sort: sort_query,
           page: page_query
-        }.merge(other_uri_params)
+        ).merge!(other_uri_params)
       ).encode
     end
 
     def other_uri_params
       # TODO: existing non-standard uri query params from the provided uri (if any)
       {}
+    end
+
+    def other_params
+      @inflector.encode_keys(@params)
     end
 
     def filter_query

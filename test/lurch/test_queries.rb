@@ -80,9 +80,23 @@ class TestQueries < Minitest::Test
     assert_requested(stub)
   end
 
+  def test_params
+    stub = stub_get(
+      "#{person_type}?baz[boom]=baum&foo=bar",
+      @response_factory.no_content_response
+    )
+
+    @store
+      .from(:people)
+      .params(foo: 'bar', baz: { boom: 'baum' })
+      .all
+
+    assert_requested(stub)
+  end
+
   def test_all
     stub = stub_get(
-      "#{person_type}?filter[name]=Alice&filter[foo][]=bar&filter[foo][]=baz&include=#{@inflector.encode_key(:phone_numbers)},friends,friends.#{@inflector.encode_key(:phone_numbers)}&fields[#{person_type}]=name&fields[#{phone_number_type}]=name,number&sort=name,-foo,bar&page[number]=12&page[size]=50",
+      "#{person_type}?filter[name]=Alice&filter[foo][]=bar&filter[foo][]=baz&include=#{@inflector.encode_key(:phone_numbers)},friends,friends.#{@inflector.encode_key(:phone_numbers)}&fields[#{person_type}]=name&fields[#{phone_number_type}]=name,number&boom=baum&sort=name,-foo,bar&page[number]=12&page[size]=50",
       @response_factory.no_content_response
     )
 
@@ -92,6 +106,7 @@ class TestQueries < Minitest::Test
       .include(:phone_numbers, :friends, "friends.phone_numbers")
       .fields([:name])
       .fields(:phone_number, [:name, :number])
+      .params(boom: 'baum')
       .sort(:name, {foo: :desc}, {bar: :asc})
       .page(number: 12, size: 50)
 
