@@ -17,11 +17,13 @@ module Lurch
       Resource.new(self, stored_resource.type, stored_resource.id)
     end
 
-    def save(changeset, query = {})
+    def save(changeset, query = {}) # rubocop:disable Metrics/AbcSize
       return insert(changeset) if changeset.id.nil?
 
-      type = Inflector.decode_type(changeset.type)
-      url = uri_builder.resource_uri(type, changeset.id, query)
+      url = uri_builder.resource_uri(
+        inflector.decode_type(changeset.type),
+        changeset.id, query
+      )
 
       document = @client.patch(url, payload_builder.build(changeset))
       process_document(document)
@@ -33,7 +35,7 @@ module Lurch
     def insert(changeset, query = {})
       return save(changeset) unless changeset.id.nil?
 
-      type = Inflector.decode_type(changeset.type)
+      type = inflector.decode_type(changeset.type)
       url = uri_builder.resources_uri(type, query)
 
       document = @client.post(url, payload_builder.build(changeset))
@@ -74,7 +76,7 @@ module Lurch
 
     # @private
     def resource_from_store(type, id)
-      normalized_type = Inflector.decode_type(type)
+      normalized_type = inflector.decode_type(type)
       @store[normalized_type][id]
     end
 
@@ -83,11 +85,14 @@ module Lurch
       Query.new(self, inflector)
     end
 
-  private
-
+    # @private
     def inflector
       @inflector ||= Inflector.new(@config.inflection_mode, @config.types_mode)
     end
+
+  private
+
+    def changeset_type(changeset); end
 
     def uri_builder
       @uri_builder ||= URIBuilder.new(inflector)

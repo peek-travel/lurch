@@ -7,7 +7,7 @@ module Lurch
         if document["data"].nil?
           @data = nil
         else
-          @type = Inflector.decode_type(document["data"]["type"])
+          @type = inflector.decode_type(document["data"]["type"])
           @id = document["data"]["id"]
           @data = Resource.new(@store, @type, @id)
         end

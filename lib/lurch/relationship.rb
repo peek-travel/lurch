@@ -13,6 +13,10 @@ module Lurch
       !!defined?(@data)
     end
 
+    def inflector
+      @store.inflector
+    end
+
     def respond_to_missing?(method, all)
       raise Errors::RelationshipNotLoaded, @relationship_key unless loaded?
       super

@@ -4,7 +4,7 @@ module Lurch
 
     def initialize(store, type, id)
       @store = store
-      @type = Inflector.decode_type(type)
+      @type = @store.inflector.decode_type(type)
       @id = id
     end
 

@@ -10,7 +10,7 @@ module Lurch
     end
 
     def type
-      @type ||= Inflector.decode_type(@resource_object["type"])
+      @type ||= inflector.decode_type(@resource_object["type"])
     end
 
     def attributes
@@ -39,15 +39,19 @@ module Lurch
 
   private
 
+    def inflector
+      @store.inflector
+    end
+
     def fixed_attributes
       @fixed_attributes ||= resource_attributes.each_with_object({}) do |(key, value), hash|
-        hash[Inflector.decode_key(key)] = value
+        hash[inflector.decode_key(key)] = value
       end
     end
 
     def fixed_relationships
       @fixed_relationships ||= resource_relationships.each_with_object({}) do |(key, value), hash|
-        relationship_key = Inflector.decode_key(key)
+        relationship_key = inflector.decode_key(key)
         hash[relationship_key] = Relationship.from_document(@store, relationship_key, value)
       end
     end

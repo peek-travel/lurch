@@ -37,7 +37,7 @@ module Lurch
     end
 
     def type(type)
-      @type = Inflector.decode_type(type)
+      @type = inflector.decode_type(type)
       self
     end
 
@@ -60,14 +60,14 @@ module Lurch
 
     def save(changeset)
       raise ArgumentError, "No type specified for query" if @type.nil?
-      raise ArgumentError, "Type mismatch" if @type != Inflector.decode_type(changeset.type)
+      raise ArgumentError, "Type mismatch" if @type != inflector.decode_type(changeset.type)
 
       @store.save(changeset, to_query)
     end
 
     def insert(changeset)
       raise ArgumentError, "No type specified for query" if @type.nil?
-      raise ArgumentError, "Type mismatch" if @type != Inflector.decode_type(changeset.type)
+      raise ArgumentError, "Type mismatch" if @type != inflector.decode_type(changeset.type)
 
       @store.insert(changeset, to_query)
     end
@@ -87,8 +87,10 @@ module Lurch
 
   private
 
+    attr_reader :inflector
+
     def uri_builder
-      @uri_builder ||= URIBuilder.new(@inflector)
+      @uri_builder ||= URIBuilder.new(inflector)
     end
 
     def to_query
@@ -109,16 +111,16 @@ module Lurch
     end
 
     def filter_query
-      @inflector.encode_keys(@filter)
+      inflector.encode_keys(@filter)
     end
 
     def include_query
-      @include.map { |path| @inflector.encode_key(path) }.compact.uniq.join(",")
+      @include.map { |path| inflector.encode_key(path) }.compact.uniq.join(",")
     end
 
     def fields_query
-      @inflector.encode_types(@fields) do |fields|
-        fields.map { |field| @inflector.encode_key(field) }.compact.uniq.join(",")
+      inflector.encode_types(@fields) do |fields|
+        fields.map { |field| inflector.encode_key(field) }.compact.uniq.join(",")
       end
     end
 
@@ -127,7 +129,7 @@ module Lurch
     end
 
     def sort_key(key, direction)
-      encoded_key = @inflector.encode_key(key)
+      encoded_key = inflector.encode_key(key)
       case direction
       when :asc
         encoded_key

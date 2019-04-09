@@ -5,11 +5,11 @@ module Lurch
       define_encode_type(types_mode)
     end
 
-    def self.decode_key(key)
+    def decode_key(key)
       Inflecto.underscore(key.to_s).to_sym
     end
 
-    def self.decode_type(type)
+    def decode_type(type)
       Inflecto.pluralize(decode_key(type)).to_sym
     end
 
