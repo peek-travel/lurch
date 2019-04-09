@@ -27,9 +27,9 @@ module Lurch
 
       document = @client.patch(url, payload_builder.build(changeset))
       process_document(document)
-    rescue Errors::JSONApiError => err
-      changeset.errors = err.errors
-      raise err
+    rescue Errors::JSONApiError => e
+      changeset.errors = e.errors
+      raise e
     end
 
     def insert(changeset, query = {})

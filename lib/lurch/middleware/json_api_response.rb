@@ -14,8 +14,8 @@ module Lurch
           env[:body_raw] = env[:body]
           begin
             env[:body] = JSON.parse(env[:body])
-          rescue StandardError => err
-            env[:parse_error] = err
+          rescue StandardError => e
+            env[:parse_error] = e
           end
         end
       end
