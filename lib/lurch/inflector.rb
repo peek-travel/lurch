@@ -5,10 +5,6 @@ module Lurch
       define_encode_type(types_mode)
     end
 
-    def self.classify(str)
-      Inflecto.classify(str)
-    end
-
     def self.decode_key(key)
       Inflecto.underscore(key.to_s).to_sym
     end

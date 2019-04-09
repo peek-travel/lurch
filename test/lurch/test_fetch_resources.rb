@@ -65,7 +65,7 @@ class TestFetchResources < Minitest::Test
     refute phone_number.loaded?
     assert phone_number.inspect
     err = assert_raises(Lurch::Errors::ResourceNotLoaded) { phone_number.name }
-    assert_equal "Resource (PhoneNumber) not loaded, try calling #fetch first.", err.message
+    assert_equal "Resource (phone_numbers) not loaded, try calling #fetch first.", err.message
 
     stub_get("#{phone_number_type}/1", @response_factory.phone_number_response("1", "Cell", "111-222-3344"))
 

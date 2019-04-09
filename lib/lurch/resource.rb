@@ -18,13 +18,13 @@ module Lurch
     end
 
     def attributes
-      raise Errors::ResourceNotLoaded, resource_class_name unless loaded?
+      raise Errors::ResourceNotLoaded, type unless loaded?
 
       resource_from_store.attributes
     end
 
     def relationships
-      raise Errors::ResourceNotLoaded, resource_class_name unless loaded?
+      raise Errors::ResourceNotLoaded, type unless loaded?
 
       resource_from_store.relationships
     end
@@ -38,13 +38,9 @@ module Lurch
     end
 
     def [](attribute)
-      raise Errors::ResourceNotLoaded, resource_class_name unless loaded?
+      raise Errors::ResourceNotLoaded, type unless loaded?
 
       resource_from_store.attribute(attribute)
-    end
-
-    def resource_class_name
-      Inflector.classify(type)
     end
 
     def inspect
@@ -68,7 +64,7 @@ module Lurch
     end
 
     def method_missing(method, *arguments, &block)
-      raise Errors::ResourceNotLoaded, resource_class_name unless loaded?
+      raise Errors::ResourceNotLoaded, type unless loaded?
 
       return resource_from_store.attribute(method) if resource_from_store.attribute?(method)
       if resource_from_store.relationship?(method)
