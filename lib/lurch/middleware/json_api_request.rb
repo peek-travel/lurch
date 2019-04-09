@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 module Lurch
   module Middleware
     class JSONApiRequest < Faraday::Middleware
-      CONTENT_TYPE = "Content-Type".freeze
-      ACCEPT = "Accept".freeze
-      MIME_TYPE = "application/vnd.api+json".freeze
+      CONTENT_TYPE = "Content-Type"
+      ACCEPT = "Accept"
+      MIME_TYPE = "application/vnd.api+json"
 
       dependency do
         require "json" unless defined?(::JSON)

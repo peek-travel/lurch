@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Lurch
   class Error
     JSON_API_ERROR_FIELDS = %w[id links about status code title detail source meta].freeze

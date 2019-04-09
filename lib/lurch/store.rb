@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Lurch
   class Store
     def initialize(url, options = {})
@@ -14,11 +16,13 @@ module Lurch
     def peek(type, id)
       stored_resource = resource_from_store(type, id.to_s)
       return nil if stored_resource.nil?
+
       Resource.new(self, stored_resource.type, stored_resource.id)
     end
 
     def save(changeset, query = {})
       return insert(changeset) if changeset.id.nil?
+
       url = uri_builder.resource_uri(changeset.type, changeset.id, query)
 
       document = @client.patch(url, payload_builder.build(changeset))
@@ -30,6 +34,7 @@ module Lurch
 
     def insert(changeset, query = {})
       return save(changeset) unless changeset.id.nil?
+
       url = uri_builder.resources_uri(changeset.type, query)
 
       document = @client.post(url, payload_builder.build(changeset))

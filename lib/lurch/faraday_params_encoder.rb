@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Lurch
   class FaradayParamsEncoder
     def self.encode(params)
