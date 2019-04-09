@@ -13,8 +13,8 @@ Gem::Specification.new do |gem|
   gem.files         = `git ls-files`.split($RS)
   gem.require_paths = ["lib"]
 
+  gem.add_dependency("dry-inflector", "< 1.0")
   gem.add_dependency("faraday", "< 1.0")
-  gem.add_dependency("inflecto", "~> 0.0")
   gem.add_dependency("rack", ">= 1.0")
   gem.add_dependency("typhoeus", "< 2.0")
 

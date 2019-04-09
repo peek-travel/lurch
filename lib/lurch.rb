@@ -1,6 +1,5 @@
 require "uri"
 
-require "inflecto"
 require "rack"
 require "faraday"
 require "typhoeus"
