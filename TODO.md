@@ -11,7 +11,7 @@
 * [x] Configurable pluralization/singularization (don't assume urls and types are always plural)
 * [x] Handle paginated results
 * [ ] Allow arbitrary headers
-* [ ] Allow arbitrary query params
+* [x] Allow arbitrary query params
 * [ ] Singleton resources
 * [ ] Handle links better?
 * [x] >= 90% test coverage
