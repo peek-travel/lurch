@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "uri"
 
 require "rack"
@@ -50,6 +52,7 @@ require "lurch/railtie" if defined?(Rails)
 module Lurch
   def self.to_a(value)
     return [] if value.nil?
+
     value.is_a?(Array) ? value : [value]
   end
 
