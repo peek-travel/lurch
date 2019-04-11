@@ -103,6 +103,15 @@ people = store.from(:people).filter(name: "Alice").all
 #=> [#<Lurch::Resource[Person] id: "2", name: "Alice">]
 ```
 
+## Other query parameters
+
+You can add arbitrary parameters as well. Note that your server should adhere to [JSON:API's query parameter constraints](https://jsonapi.org/format/#query-parameters).
+
+```ruby
+people = store.from(:people).params(someQuery: "blue").all
+# => GET /people?someQuery=blue
+```
+
 ## Relationships
 
 Lurch can fetch *has-many* and *has-one* relationships from the server when they are provided as *related links*:
