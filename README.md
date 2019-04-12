@@ -103,6 +103,15 @@ people = store.from(:people).filter(name: "Alice").all
 #=> [#<Lurch::Resource[Person] id: "2", name: "Alice">]
 ```
 
+## Other query parameters
+
+You can add arbitrary parameters as well. Note that your server should adhere to [JSON:API's query parameter constraints](https://jsonapi.org/format/#query-parameters).
+
+```ruby
+people = store.from(:people).params(someQuery: "blue").all
+# => GET /people?someQuery=blue
+```
+
 ## Relationships
 
 Lurch can fetch *has-many* and *has-one* relationships from the server when they are provided as *related links*:
@@ -214,6 +223,20 @@ You can add an *Authorization* header to all your requests by configuring the st
 
 ```ruby
 store = Lurch::Store.new("...", authorization: "Bearer eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOjEsIm5hbWUiOiJCb2IifQ.")
+```
+
+## Customize Faraday
+
+You can customize [faraday](https://rubygems.org/gems/faraday) by passing a block to `Store.new`.
+Use this to add arbitrary headers or faraday middlewares.
+
+```ruby
+store = Lurch::Store.new("http://example.com/api") do |conn|
+  # conn.use MyFaradayMiddleware
+  conn.headers['X-Request-Id'] = '123'
+end
+
+store.from(:people).all
 ```
 
 ## Contributing
