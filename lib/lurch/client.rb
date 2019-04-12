@@ -13,9 +13,10 @@ module Lurch
       422 => Errors::UnprocessableEntity
     }.freeze
 
-    def initialize(url, config)
+    def initialize(url, config, &block)
       @url = url
       @config = config
+      @customize_faraday = block if block_given?
     end
 
     def get(path)
@@ -87,6 +88,7 @@ module Lurch
 
         conn.request :jsonapi
         conn.response :jsonapi
+        @customize_faraday&.yield(conn)
 
         conn.adapter :typhoeus
       end

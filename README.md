@@ -225,6 +225,20 @@ You can add an *Authorization* header to all your requests by configuring the st
 store = Lurch::Store.new("...", authorization: "Bearer eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOjEsIm5hbWUiOiJCb2IifQ.")
 ```
 
+## Customize Faraday
+
+You can customize [faraday](https://rubygems.org/gems/faraday) by passing a block to `Store.new`.
+Use this to add arbitrary headers or faraday middlewares.
+
+```ruby
+store = Lurch::Store.new("http://example.com/api") do |conn|
+  # conn.use MyFaradayMiddleware
+  conn.headers['X-Request-Id'] = '123'
+end
+
+store.from(:people).all
+```
+
 ## Contributing
 
 1.  Fork it (<https://github.com/peek-travel/lurch/fork>)
