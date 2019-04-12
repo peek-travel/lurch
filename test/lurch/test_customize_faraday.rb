@@ -2,7 +2,7 @@
 
 require_relative "../test_helper"
 
-class TestQueries < Minitest::Test
+class TestCustomizeFaraday < Minitest::Test
   include LurchTest
 
   def test_customize_faraday
